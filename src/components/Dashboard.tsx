@@ -7,7 +7,7 @@ import FlightsPage from './FlightsPage';
 import HotelsPage from './HotelsPage';
 import LimousinesPage from './LimousinesPage';
 import BackgroundManager from './BackgroundManager';
-import UsersPage from './UsersPage';
+import BookingsPage from './BookingsPage';
 import SettingsPage from './SettingsPage';
 
 const Dashboard = () => {
@@ -24,10 +24,10 @@ const Dashboard = () => {
         return <HotelsPage />;
       case 'limousines':
         return <LimousinesPage />;
+      case 'bookings':
+        return <BookingsPage />;
       case 'background':
         return <BackgroundManager />;
-      case 'users':
-        return <UsersPage />;
       case 'settings':
         return <SettingsPage />;
       default:
@@ -36,7 +36,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-gray-50">
       <div className="flex w-full">
         <Sidebar 
           currentPage={currentPage} 
