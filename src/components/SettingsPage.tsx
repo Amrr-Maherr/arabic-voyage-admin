@@ -1,268 +1,250 @@
 
 import React, { useState } from 'react';
-import { Save, Globe, Bell, Shield, Palette, Database } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Save, Shield, Bell, Globe, User, Mail, Phone, MapPin } from 'lucide-react';
 
 const SettingsPage = () => {
+  const [isRTL] = useState(document.dir === 'rtl');
   const [settings, setSettings] = useState({
+    companyName: 'TravelBook',
+    email: 'admin@travelbook.com',
+    phone: '+1234567890',
+    address: '123 Travel Street, City',
+    notifications: true,
+    emailNotifications: true,
+    smsNotifications: false,
     language: 'en',
-    timezone: 'UTC+2',
-    currency: 'USD',
-    notifications: {
-      email: true,
-      push: true,
-      sms: false
-    },
-    security: {
-      twoFactor: true,
-      sessionTimeout: 30
-    },
-    theme: 'light'
+    timezone: 'UTC',
+    currency: 'USD'
   });
 
-  const handleSettingChange = (category: string, key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category as keyof typeof prev],
-        [key]: value
-      }
-    }));
-  };
-
-  const handleSave = () => {
-    console.log('Saving settings:', settings);
-    // Simulate save
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setSettings(prev => ({ ...prev, [field]: value }));
   };
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Manage your application preferences and configuration</p>
-        </div>
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-        >
-          <Save className="w-5 h-5" />
-          <span>Save Changes</span>
-        </button>
+      <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <h1 className="text-2xl font-bold text-gray-800">
+          {isRTL ? 'الإعدادات' : 'Settings'}
+        </h1>
       </div>
 
-      {/* Settings Sections */}
-      <div className="space-y-6">
-        {/* General Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <Globe className="w-5 h-5 text-blue-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">General Settings</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Company Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <User className="w-5 h-5" />
+              {isRTL ? 'معلومات الشركة' : 'Company Information'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
-              <select
-                value={settings.language}
-                onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="en">English</option>
-                <option value="ar">العربية (Arabic)</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-              </select>
+              <Label htmlFor="companyName">
+                {isRTL ? 'اسم الشركة' : 'Company Name'}
+              </Label>
+              <Input
+                id="companyName"
+                value={settings.companyName}
+                onChange={(e) => handleInputChange('companyName', e.target.value)}
+                className={isRTL ? 'text-right' : ''}
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-              <select
-                value={settings.timezone}
-                onChange={(e) => setSettings(prev => ({ ...prev, timezone: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="UTC+2">UTC+2 (Cairo)</option>
-                <option value="UTC+0">UTC+0 (London)</option>
-                <option value="UTC-5">UTC-5 (New York)</option>
-                <option value="UTC+8">UTC+8 (Beijing)</option>
-              </select>
+              <Label htmlFor="email">
+                {isRTL ? 'البريد الإلكتروني' : 'Email'}
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={settings.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className={isRTL ? 'text-right' : ''}
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-              <select
-                value={settings.currency}
-                onChange={(e) => setSettings(prev => ({ ...prev, currency: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="EGP">EGP (ج.م)</option>
-                <option value="AED">AED (د.إ)</option>
-              </select>
+              <Label htmlFor="phone">
+                {isRTL ? 'رقم الهاتف' : 'Phone Number'}
+              </Label>
+              <Input
+                id="phone"
+                value={settings.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                className={isRTL ? 'text-right' : ''}
+              />
             </div>
-          </div>
-        </div>
+            <div>
+              <Label htmlFor="address">
+                {isRTL ? 'العنوان' : 'Address'}
+              </Label>
+              <Textarea
+                id="address"
+                value={settings.address}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+                className={isRTL ? 'text-right' : ''}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Notification Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <Bell className="w-5 h-5 text-green-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Notification Settings</h3>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-900">Email Notifications</p>
-                <p className="text-sm text-gray-500">Receive notifications via email</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.notifications.email}
-                  onChange={(e) => handleSettingChange('notifications', 'email', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+        <Card>
+          <CardHeader>
+            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Bell className="w-5 h-5" />
+              {isRTL ? 'إعدادات الإشعارات' : 'Notification Settings'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Label htmlFor="notifications">
+                {isRTL ? 'تفعيل الإشعارات' : 'Enable Notifications'}
+              </Label>
+              <Switch
+                id="notifications"
+                checked={settings.notifications}
+                onCheckedChange={(checked) => handleInputChange('notifications', checked)}
+              />
             </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-900">Push Notifications</p>
-                <p className="text-sm text-gray-500">Receive push notifications in browser</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.notifications.push}
-                  onChange={(e) => handleSettingChange('notifications', 'push', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Label htmlFor="emailNotifications">
+                {isRTL ? 'إشعارات البريد الإلكتروني' : 'Email Notifications'}
+              </Label>
+              <Switch
+                id="emailNotifications"
+                checked={settings.emailNotifications}
+                onCheckedChange={(checked) => handleInputChange('emailNotifications', checked)}
+              />
             </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-900">SMS Notifications</p>
-                <p className="text-sm text-gray-500">Receive notifications via SMS</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.notifications.sms}
-                  onChange={(e) => handleSettingChange('notifications', 'sms', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Label htmlFor="smsNotifications">
+                {isRTL ? 'إشعارات الرسائل النصية' : 'SMS Notifications'}
+              </Label>
+              <Switch
+                id="smsNotifications"
+                checked={settings.smsNotifications}
+                onCheckedChange={(checked) => handleInputChange('smsNotifications', checked)}
+              />
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Security Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <Shield className="w-5 h-5 text-red-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Security Settings</h3>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-900">Two-Factor Authentication</p>
-                <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.security.twoFactor}
-                  onChange={(e) => handleSettingChange('security', 'twoFactor', e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+        {/* System Preferences */}
+        <Card>
+          <CardHeader>
+            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Globe className="w-5 h-5" />
+              {isRTL ? 'تفضيلات النظام' : 'System Preferences'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="language">
+                {isRTL ? 'اللغة' : 'Language'}
+              </Label>
+              <Select value={settings.language} onValueChange={(value) => handleInputChange('language', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="ar">العربية</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Session Timeout (minutes)</label>
-              <select
-                value={settings.security.sessionTimeout}
-                onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
-                className="w-full max-w-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value={15}>15 minutes</option>
-                <option value={30}>30 minutes</option>
-                <option value={60}>1 hour</option>
-                <option value={120}>2 hours</option>
-              </select>
+              <Label htmlFor="timezone">
+                {isRTL ? 'المنطقة الزمنية' : 'Timezone'}
+              </Label>
+              <Select value={settings.timezone} onValueChange={(value) => handleInputChange('timezone', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="UTC">UTC</SelectItem>
+                  <SelectItem value="EST">EST</SelectItem>
+                  <SelectItem value="PST">PST</SelectItem>
+                  <SelectItem value="GMT+3">GMT+3</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-        </div>
+            <div>
+              <Label htmlFor="currency">
+                {isRTL ? 'العملة' : 'Currency'}
+              </Label>
+              <Select value={settings.currency} onValueChange={(value) => handleInputChange('currency', value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USD">USD - US Dollar</SelectItem>
+                  <SelectItem value="EUR">EUR - Euro</SelectItem>
+                  <SelectItem value="AED">AED - UAE Dirham</SelectItem>
+                  <SelectItem value="SAR">SAR - Saudi Riyal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Appearance Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <Palette className="w-5 h-5 text-purple-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Appearance</h3>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Theme</label>
-            <div className="grid grid-cols-2 gap-4 max-w-md">
-              <label className="cursor-pointer">
-                <input
-                  type="radio"
-                  name="theme"
-                  value="light"
-                  checked={settings.theme === 'light'}
-                  onChange={(e) => setSettings(prev => ({ ...prev, theme: e.target.value }))}
-                  className="sr-only peer"
-                />
-                <div className="border-2 border-gray-300 rounded-lg p-4 peer-checked:border-blue-500 peer-checked:bg-blue-50">
-                  <div className="w-full h-16 bg-white rounded border border-gray-200 mb-2"></div>
-                  <p className="text-sm font-medium text-center">Light</p>
-                </div>
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  type="radio"
-                  name="theme"
-                  value="dark"
-                  checked={settings.theme === 'dark'}
-                  onChange={(e) => setSettings(prev => ({ ...prev, theme: e.target.value }))}
-                  className="sr-only peer"
-                />
-                <div className="border-2 border-gray-300 rounded-lg p-4 peer-checked:border-blue-500 peer-checked:bg-blue-50">
-                  <div className="w-full h-16 bg-gray-800 rounded border border-gray-600 mb-2"></div>
-                  <p className="text-sm font-medium text-center">Dark</p>
-                </div>
-              </label>
+        {/* Security Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Shield className="w-5 h-5" />
+              {isRTL ? 'إعدادات الأمان' : 'Security Settings'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="currentPassword">
+                {isRTL ? 'كلمة المرور الحالية' : 'Current Password'}
+              </Label>
+              <Input
+                id="currentPassword"
+                type="password"
+                className={isRTL ? 'text-right' : ''}
+              />
             </div>
-          </div>
-        </div>
+            <div>
+              <Label htmlFor="newPassword">
+                {isRTL ? 'كلمة المرور الجديدة' : 'New Password'}
+              </Label>
+              <Input
+                id="newPassword"
+                type="password"
+                className={isRTL ? 'text-right' : ''}
+              />
+            </div>
+            <div>
+              <Label htmlFor="confirmPassword">
+                {isRTL ? 'تأكيد كلمة المرور' : 'Confirm Password'}
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                className={isRTL ? 'text-right' : ''}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        {/* System Settings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <Database className="w-5 h-5 text-orange-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">System Settings</h3>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-              <div>
-                <p className="text-sm font-medium text-yellow-800">Database Backup</p>
-                <p className="text-sm text-yellow-700">Last backup: 2 hours ago</p>
-              </div>
-              <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-                Backup Now
-              </button>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
-              <div>
-                <p className="text-sm font-medium text-red-800">Clear Cache</p>
-                <p className="text-sm text-red-700">Clear application cache to improve performance</p>
-              </div>
-              <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                Clear Cache
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className={`flex gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <Button className="travel-gradient text-white">
+          <Save className="w-4 h-4 mr-2" />
+          {isRTL ? 'حفظ التغييرات' : 'Save Changes'}
+        </Button>
+        <Button variant="outline">
+          {isRTL ? 'إلغاء' : 'Cancel'}
+        </Button>
       </div>
     </div>
   );
