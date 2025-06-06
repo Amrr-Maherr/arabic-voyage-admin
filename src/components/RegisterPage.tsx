@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Plane, Hotel, Car } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -16,11 +15,10 @@ const RegisterPage = () => {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '',
-    agreeToTerms: false
+    confirmPassword: ''
   });
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -161,31 +159,10 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              {/* Terms Agreement */}
-              <div className="flex items-start gap-2 pt-2">
-                <Checkbox
-                  id="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onCheckedChange={(checked) => handleInputChange('agreeToTerms', checked as boolean)}
-                  className="mt-1"
-                />
-                <Label htmlFor="agreeToTerms" className="text-sm text-gray-600 leading-5">
-                  I agree to the{' '}
-                  <Link to="/terms" className="text-blue-600 hover:text-blue-800">
-                    Terms of Service
-                  </Link>{' '}
-                  and{' '}
-                  <Link to="/privacy" className="text-blue-600 hover:text-blue-800">
-                    Privacy Policy
-                  </Link>
-                </Label>
-              </div>
-
               {/* Register Button */}
               <Button
                 type="submit"
                 className="w-full h-12 travel-gradient text-white font-medium text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 mt-6"
-                disabled={!formData.agreeToTerms}
               >
                 <span className="flex items-center gap-2">
                   Create Account

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Plane, Building2, Car, DollarSign, TrendingUp, Users, Calendar } from 'lucide-react';
+import { Plane, Building2, Car, DollarSign, Calendar } from 'lucide-react';
 
 const DashboardHome = () => {
   const stats = [
@@ -74,50 +74,32 @@ const DashboardHome = () => {
         })}
       </div>
 
-      {/* Charts and Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Mock Chart */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Booking Trends</h3>
-            <TrendingUp className="w-5 h-5 text-green-500" />
-          </div>
-          <div className="h-64 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <TrendingUp className="w-12 h-12 text-blue-500 mx-auto mb-2" />
-              <p className="text-gray-600">Chart Placeholder</p>
-              <p className="text-sm text-gray-500">Booking trends visualization would appear here</p>
-            </div>
-          </div>
+      {/* Recent Bookings */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Recent Bookings</h3>
+          <Calendar className="w-5 h-5 text-blue-500" />
         </div>
-
-        {/* Recent Bookings */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Bookings</h3>
-            <Calendar className="w-5 h-5 text-blue-500" />
-          </div>
-          <div className="space-y-3">
-            {recentBookings.map((booking) => (
-              <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    booking.status === 'Confirmed' ? 'bg-green-500' : 'bg-yellow-500'
-                  }`}></div>
-                  <div>
-                    <p className="font-medium text-gray-900">{booking.customer}</p>
-                    <p className="text-sm text-gray-600">{booking.type} - {booking.destination}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">{booking.amount}</p>
-                  <p className={`text-sm ${
-                    booking.status === 'Confirmed' ? 'text-green-600' : 'text-yellow-600'
-                  }`}>{booking.status}</p>
+        <div className="space-y-3">
+          {recentBookings.map((booking) => (
+            <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className={`w-2 h-2 rounded-full ${
+                  booking.status === 'Confirmed' ? 'bg-green-500' : 'bg-yellow-500'
+                }`}></div>
+                <div>
+                  <p className="font-medium text-gray-900">{booking.customer}</p>
+                  <p className="text-sm text-gray-600">{booking.type} - {booking.destination}</p>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="text-right">
+                <p className="font-semibold text-gray-900">{booking.amount}</p>
+                <p className={`text-sm ${
+                  booking.status === 'Confirmed' ? 'text-green-600' : 'text-yellow-600'
+                }`}>{booking.status}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
