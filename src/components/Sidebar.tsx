@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
   ];
 
   return (
-    <div className="bg-white shadow-lg h-screen w-64 flex flex-col border-r border-gray-200">
+    <div className="bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
