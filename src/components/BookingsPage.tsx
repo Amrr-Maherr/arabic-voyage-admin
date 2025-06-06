@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Search, Filter, Calendar, Plane, Building2, Car, Eye, Edit, Trash2, Download, X, User, Mail, MapPin, CreditCard, Clock } from 'lucide-react';
+import { Search, Filter, Calendar, Plane, Building2, Car, Eye, Edit, Trash2, Download, X, User, Mail, MapPin, CreditCard, Clock, Check, XCircle, Pause } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 const BookingsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedBooking, setSelectedBooking] = useState(null);
-
-  const bookings = [
+  const [bookings, setBookings] = useState([
     {
       id: 'BK001',
       type: 'flight',
@@ -136,7 +137,30 @@ const BookingsPage = () => {
         duration: '8 hours'
       }
     }
-  ];
+  ]);
+
+  const { toast } = useToast();
+
+  const updateBookingStatus = (bookingId: string, newStatus: string) => {
+    setBookings(prevBookings => 
+      prevBookings.map(booking => 
+        booking.id === bookingId 
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+
+    const statusMessages = {
+      'Confirmed': 'Booking has been confirmed successfully',
+      'Cancelled': 'Booking has been cancelled',
+      'Pending': 'Booking status set to pending'
+    };
+
+    toast({
+      title: "Status Updated",
+      description: statusMessages[newStatus] || "Booking status updated",
+    });
+  };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -457,12 +481,67 @@ const BookingsPage = () => {
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="text-green-600 hover:text-green-800" title="Edit Booking">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button className="text-red-600 hover:text-red-800" title="Cancel Booking">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      
+                      {/* Confirm Button */}
+                      {booking.status !== 'Confirmed' && booking.status !== 'Completed' && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button className="text-green-600 hover:text-green-800" title="Confirm Booking">
+                              <Check className="w-4 h-4" />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Booking</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to confirm booking {booking.id}? This action will update the booking status to confirmed.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => updateBookingStatus(booking.id, 'Confirmed')}>
+                                Confirm
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+
+                      {/* Set Pending Button */}
+                      {booking.status !== 'Pending' && booking.status !== 'Completed' && (
+                        <button 
+                          className="text-yellow-600 hover:text-yellow-800" 
+                          title="Set Pending"
+                          onClick={() => updateBookingStatus(booking.id, 'Pending')}
+                        >
+                          <Pause className="w-4 h-4" />
+                        </button>
+                      )}
+
+                      {/* Cancel Button */}
+                      {booking.status !== 'Cancelled' && booking.status !== 'Completed' && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button className="text-red-600 hover:text-red-800" title="Cancel Booking">
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Cancel Booking</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to cancel booking {booking.id}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Keep Booking</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => updateBookingStatus(booking.id, 'Cancelled')} className="bg-red-600 hover:bg-red-700">
+                                Cancel Booking
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </div>
                   </td>
                 </tr>
