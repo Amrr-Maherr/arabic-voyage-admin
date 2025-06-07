@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { User, LogOut } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
   isRTL: boolean;
@@ -16,9 +15,6 @@ const Navbar: React.FC<NavbarProps> = ({ isRTL, setIsRTL }) => {
       </div>
 
       <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        {/* Theme Toggle */}
-        <ThemeToggle />
-        
         {/* User Profile */}
         <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">

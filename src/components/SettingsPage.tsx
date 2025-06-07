@@ -4,10 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Shield, Bell, Globe, User, Mail, Phone, MapPin } from 'lucide-react';
+import { Save, Shield, User } from 'lucide-react';
 
 const SettingsPage = () => {
   const [isRTL] = useState(document.dir === 'rtl');
@@ -15,16 +13,10 @@ const SettingsPage = () => {
     companyName: 'TravelBook',
     email: 'admin@travelbook.com',
     phone: '+1234567890',
-    address: '123 Travel Street, City',
-    notifications: true,
-    emailNotifications: true,
-    smsNotifications: false,
-    language: 'en',
-    timezone: 'UTC',
-    currency: 'USD'
+    address: '123 Travel Street, City'
   });
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
@@ -90,106 +82,6 @@ const SettingsPage = () => {
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 className={isRTL ? 'text-right' : ''}
               />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Notification Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Bell className="w-5 h-5" />
-              {isRTL ? 'إعدادات الإشعارات' : 'Notification Settings'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Label htmlFor="notifications">
-                {isRTL ? 'تفعيل الإشعارات' : 'Enable Notifications'}
-              </Label>
-              <Switch
-                id="notifications"
-                checked={settings.notifications}
-                onCheckedChange={(checked) => handleInputChange('notifications', checked)}
-              />
-            </div>
-            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Label htmlFor="emailNotifications">
-                {isRTL ? 'إشعارات البريد الإلكتروني' : 'Email Notifications'}
-              </Label>
-              <Switch
-                id="emailNotifications"
-                checked={settings.emailNotifications}
-                onCheckedChange={(checked) => handleInputChange('emailNotifications', checked)}
-              />
-            </div>
-            <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Label htmlFor="smsNotifications">
-                {isRTL ? 'إشعارات الرسائل النصية' : 'SMS Notifications'}
-              </Label>
-              <Switch
-                id="smsNotifications"
-                checked={settings.smsNotifications}
-                onCheckedChange={(checked) => handleInputChange('smsNotifications', checked)}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* System Preferences */}
-        <Card>
-          <CardHeader>
-            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Globe className="w-5 h-5" />
-              {isRTL ? 'تفضيلات النظام' : 'System Preferences'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="language">
-                {isRTL ? 'اللغة' : 'Language'}
-              </Label>
-              <Select value={settings.language} onValueChange={(value) => handleInputChange('language', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="ar">العربية</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="timezone">
-                {isRTL ? 'المنطقة الزمنية' : 'Timezone'}
-              </Label>
-              <Select value={settings.timezone} onValueChange={(value) => handleInputChange('timezone', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="UTC">UTC</SelectItem>
-                  <SelectItem value="EST">EST</SelectItem>
-                  <SelectItem value="PST">PST</SelectItem>
-                  <SelectItem value="GMT+3">GMT+3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="currency">
-                {isRTL ? 'العملة' : 'Currency'}
-              </Label>
-              <Select value={settings.currency} onValueChange={(value) => handleInputChange('currency', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD - US Dollar</SelectItem>
-                  <SelectItem value="EUR">EUR - Euro</SelectItem>
-                  <SelectItem value="AED">AED - UAE Dirham</SelectItem>
-                  <SelectItem value="SAR">SAR - Saudi Riyal</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </CardContent>
         </Card>
