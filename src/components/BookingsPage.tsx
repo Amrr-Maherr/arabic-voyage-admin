@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Search, Filter, Calendar, Plane, Building2, Car, Eye, Edit, Trash2, Download, X, User, Mail, MapPin, CreditCard, Clock, Check, XCircle, Pause } from 'lucide-react';
+import { Search, Filter, Calendar, Plane, Building2, Car, Eye, Edit, Trash2, Download, X, User, Mail, MapPin, CreditCard, Clock, Check, XCircle, Pause, Package } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
@@ -20,6 +21,9 @@ const BookingsPage = () => {
       status: 'Confirmed',
       amount: '$450',
       bookingDate: '2024-06-01',
+      packageId: 'PKG001',
+      isPackage: true,
+      packageType: 'flight+hotel',
       details: {
         departure: 'Cairo International Airport (CAI)',
         arrival: 'Dubai International Airport (DXB)',
@@ -34,21 +38,26 @@ const BookingsPage = () => {
     {
       id: 'BK002',
       type: 'hotel',
-      customerName: 'Ahmed Mohamed',
-      customerEmail: 'ahmed.mohamed@email.com',
-      customerPhone: '+20 123 456 789',
-      service: 'Nile Palace Hotel',
-      date: '2024-06-20',
-      status: 'Pending',
-      amount: '$240',
-      bookingDate: '2024-06-02',
+      customerName: 'Sarah Johnson',
+      customerEmail: 'sarah.johnson@email.com',
+      customerPhone: '+1 234 567 8900',
+      service: 'Dubai Palace Hotel',
+      date: '2024-06-15',
+      status: 'Confirmed',
+      amount: '$300',
+      bookingDate: '2024-06-01',
+      packageId: 'PKG001',
+      isPackage: true,
+      packageType: 'flight+hotel',
+      originalPrice: '$350',
+      discount: '$50',
       details: {
-        checkIn: '2024-06-20',
-        checkOut: '2024-06-23',
+        checkIn: '2024-06-15',
+        checkOut: '2024-06-18',
         nights: 3,
         roomType: 'Deluxe Suite',
-        guests: 2,
-        address: '123 Nile Corniche, Cairo, Egypt',
+        guests: 1,
+        address: '123 Dubai Marina, Dubai, UAE',
         amenities: ['Free WiFi', 'Pool', 'Spa', 'Restaurant']
       }
     },
@@ -63,6 +72,7 @@ const BookingsPage = () => {
       status: 'Completed',
       amount: '$150',
       bookingDate: '2024-06-03',
+      isPackage: false,
       details: {
         pickupLocation: 'Downtown Hotel',
         dropoffLocation: 'Cairo International Airport',
@@ -84,6 +94,7 @@ const BookingsPage = () => {
       status: 'Confirmed',
       amount: '$380',
       bookingDate: '2024-06-04',
+      isPackage: false,
       details: {
         departure: 'Heathrow Airport (LHR)',
         arrival: 'Cairo International Airport (CAI)',
@@ -106,6 +117,7 @@ const BookingsPage = () => {
       status: 'Cancelled',
       amount: '$500',
       bookingDate: '2024-06-05',
+      isPackage: false,
       details: {
         checkIn: '2024-06-30',
         checkOut: '2024-07-05',
@@ -127,6 +139,7 @@ const BookingsPage = () => {
       status: 'Confirmed',
       amount: '$200',
       bookingDate: '2024-06-06',
+      isPackage: false,
       details: {
         pickupLocation: 'Four Seasons Hotel',
         tour: 'Full Day Cairo City Tour',
@@ -190,6 +203,18 @@ const BookingsPage = () => {
     }
   };
 
+  const getRelatedBookings = (booking: any) => {
+    if (!booking.isPackage || !booking.packageId) return [];
+    return bookings.filter(b => b.packageId === booking.packageId && b.id !== booking.id);
+  };
+
+  const getPackageDiscount = (booking: any) => {
+    if (!booking.isPackage || !booking.originalPrice) return null;
+    const original = parseInt(booking.originalPrice.replace('$', ''));
+    const current = parseInt(booking.amount.replace('$', ''));
+    return original - current;
+  };
+
   const filteredBookings = bookings.filter(booking => {
     const matchesSearch = booking.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          booking.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -203,11 +228,12 @@ const BookingsPage = () => {
     const flights = bookings.filter(b => b.type === 'flight').length;
     const hotels = bookings.filter(b => b.type === 'hotel').length;
     const limousines = bookings.filter(b => b.type === 'limousine').length;
+    const packages = bookings.filter(b => b.isPackage).length / 2; // Each package has 2 bookings
     const totalRevenue = bookings.reduce((sum, booking) => {
       return sum + parseInt(booking.amount.replace('$', ''));
     }, 0);
 
-    return { total, flights, hotels, limousines, totalRevenue };
+    return { total, flights, hotels, limousines, packages, totalRevenue };
   };
 
   const stats = getBookingStats();
@@ -216,94 +242,120 @@ const BookingsPage = () => {
     if (!selectedBooking) return null;
 
     const { type, details } = selectedBooking;
+    const relatedBookings = getRelatedBookings(selectedBooking);
+    const packageDiscount = getPackageDiscount(selectedBooking);
 
-    if (type === 'flight') {
-      return (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Flight Information</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Flight:</span> {details.flightNumber}</p>
-                <p><span className="font-medium">Airline:</span> {details.airline}</p>
-                <p><span className="font-medium">Class:</span> {details.class}</p>
-                <p><span className="font-medium">Passengers:</span> {details.passengers}</p>
+    return (
+      <div className="space-y-6">
+        {/* Package Information */}
+        {selectedBooking.isPackage && (
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Package Deal - {selectedBooking.packageType.replace('+', ' + ').toUpperCase()}
+            </h4>
+            {packageDiscount && (
+              <p className="text-sm text-blue-700">
+                Package Discount: <span className="font-semibold">${packageDiscount}</span>
+                <span className="text-xs ml-2">(Original: {selectedBooking.originalPrice})</span>
+              </p>
+            )}
+            {relatedBookings.length > 0 && (
+              <div className="mt-3">
+                <p className="text-sm font-medium text-blue-900 mb-2">Related Bookings:</p>
+                <div className="space-y-1">
+                  {relatedBookings.map(booking => (
+                    <div key={booking.id} className="flex items-center gap-2 text-sm text-blue-700">
+                      {getTypeIcon(booking.type)}
+                      <span>{booking.id} - {booking.service}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Schedule</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Departure:</span> {details.departureTime}</p>
-                <p><span className="font-medium">Arrival:</span> {details.arrivalTime}</p>
-                <p><span className="font-medium">From:</span> {details.departure}</p>
-                <p><span className="font-medium">To:</span> {details.arrival}</p>
-              </div>
-            </div>
+            )}
           </div>
-        </div>
-      );
-    }
+        )}
 
-    if (type === 'hotel') {
-      return (
+        {/* Service Details */}
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Stay Information</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Check-in:</span> {details.checkIn}</p>
-                <p><span className="font-medium">Check-out:</span> {details.checkOut}</p>
-                <p><span className="font-medium">Nights:</span> {details.nights}</p>
-                <p><span className="font-medium">Room:</span> {details.roomType}</p>
-                <p><span className="font-medium">Guests:</span> {details.guests}</p>
+          {type === 'flight' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Flight Information</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Flight:</span> {details.flightNumber}</p>
+                  <p><span className="font-medium">Airline:</span> {details.airline}</p>
+                  <p><span className="font-medium">Class:</span> {details.class}</p>
+                  <p><span className="font-medium">Passengers:</span> {details.passengers}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Schedule</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Departure:</span> {details.departureTime}</p>
+                  <p><span className="font-medium">Arrival:</span> {details.arrivalTime}</p>
+                  <p><span className="font-medium">From:</span> {details.departure}</p>
+                  <p><span className="font-medium">To:</span> {details.arrival}</p>
+                </div>
               </div>
             </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
-              <p className="text-sm mb-3">{details.address}</p>
-              <h4 className="font-semibold text-gray-900 mb-2">Amenities</h4>
-              <div className="flex flex-wrap gap-1">
-                {details.amenities.map((amenity, index) => (
-                  <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                    {amenity}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
+          )}
 
-    if (type === 'limousine') {
-      return (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Service Information</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Vehicle:</span> {details.vehicleType}</p>
-                <p><span className="font-medium">Pickup Time:</span> {details.pickupTime}</p>
-                <p><span className="font-medium">Duration:</span> {details.duration}</p>
-                {details.tour && <p><span className="font-medium">Tour:</span> {details.tour}</p>}
+          {type === 'hotel' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Stay Information</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Check-in:</span> {details.checkIn}</p>
+                  <p><span className="font-medium">Check-out:</span> {details.checkOut}</p>
+                  <p><span className="font-medium">Nights:</span> {details.nights}</p>
+                  <p><span className="font-medium">Room:</span> {details.roomType}</p>
+                  <p><span className="font-medium">Guests:</span> {details.guests}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
+                <p className="text-sm mb-3">{details.address}</p>
+                <h4 className="font-semibold text-gray-900 mb-2">Amenities</h4>
+                <div className="flex flex-wrap gap-1">
+                  {details.amenities.map((amenity, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Locations</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Pickup:</span> {details.pickupLocation}</p>
-                {details.dropoffLocation && <p><span className="font-medium">Drop-off:</span> {details.dropoffLocation}</p>}
+          )}
+
+          {type === 'limousine' && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Service Information</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Vehicle:</span> {details.vehicleType}</p>
+                  <p><span className="font-medium">Pickup Time:</span> {details.pickupTime}</p>
+                  <p><span className="font-medium">Duration:</span> {details.duration}</p>
+                  {details.tour && <p><span className="font-medium">Tour:</span> {details.tour}</p>}
+                </div>
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2 mt-4">Driver</h4>
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Name:</span> {details.driver}</p>
-                <p><span className="font-medium">Phone:</span> {details.driverPhone}</p>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Locations</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Pickup:</span> {details.pickupLocation}</p>
+                  {details.dropoffLocation && <p><span className="font-medium">Drop-off:</span> {details.dropoffLocation}</p>}
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2 mt-4">Driver</h4>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Name:</span> {details.driver}</p>
+                  <p><span className="font-medium">Phone:</span> {details.driverPhone}</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   return (
@@ -321,7 +373,7 @@ const BookingsPage = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
@@ -363,6 +415,17 @@ const BookingsPage = () => {
             <div>
               <p className="text-sm text-gray-600">Limousines</p>
               <p className="text-lg font-semibold text-gray-900">{stats.limousines}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
+              <Package className="w-5 h-5 text-indigo-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Packages</p>
+              <p className="text-lg font-semibold text-gray-900">{stats.packages}</p>
             </div>
           </div>
         </div>
@@ -439,11 +502,14 @@ const BookingsPage = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredBookings.map((booking) => (
-                <tr key={booking.id} className="hover:bg-gray-50">
+                <tr key={booking.id} className={`hover:bg-gray-50 ${booking.isPackage ? 'bg-blue-50/30' : ''}`}>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       {getTypeIcon(booking.type)}
                       <span className="ml-2 font-medium text-gray-900">{booking.id}</span>
+                      {booking.isPackage && (
+                        <Package className="w-4 h-4 text-indigo-600 ml-2" title="Package Deal" />
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -455,7 +521,14 @@ const BookingsPage = () => {
                   <td className="px-6 py-4">
                     <div>
                       <p className="font-medium text-gray-900">{booking.service}</p>
-                      <p className="text-sm text-gray-500 capitalize">{booking.type} booking</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-gray-500 capitalize">{booking.type} booking</p>
+                        {booking.isPackage && (
+                          <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                            {booking.packageType.replace('+', ' + ')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -465,7 +538,12 @@ const BookingsPage = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="font-semibold text-gray-900">{booking.amount}</span>
+                    <div>
+                      <span className="font-semibold text-gray-900">{booking.amount}</span>
+                      {booking.originalPrice && (
+                        <p className="text-xs text-gray-500 line-through">{booking.originalPrice}</p>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(booking.status)}`}>
@@ -507,7 +585,6 @@ const BookingsPage = () => {
                         </AlertDialog>
                       )}
 
-                      {/* Set Pending Button */}
                       {booking.status !== 'Pending' && booking.status !== 'Completed' && (
                         <button 
                           className="text-yellow-600 hover:text-yellow-800" 
@@ -518,7 +595,6 @@ const BookingsPage = () => {
                         </button>
                       )}
 
-                      {/* Cancel Button */}
                       {booking.status !== 'Cancelled' && booking.status !== 'Completed' && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -558,6 +634,9 @@ const BookingsPage = () => {
             <DialogTitle className="flex items-center gap-2">
               {selectedBooking && getTypeIcon(selectedBooking.type)}
               Booking Details - {selectedBooking?.id}
+              {selectedBooking?.isPackage && (
+                <Package className="w-4 h-4 text-indigo-600" />
+              )}
             </DialogTitle>
           </DialogHeader>
           
@@ -608,6 +687,14 @@ const BookingsPage = () => {
                   <div>
                     <p className="font-medium">Total Amount</p>
                     <p className="text-gray-600 text-lg font-semibold">{selectedBooking.amount}</p>
+                    {selectedBooking.originalPrice && (
+                      <p className="text-xs text-gray-500">
+                        Original: <span className="line-through">{selectedBooking.originalPrice}</span>
+                        <span className="text-green-600 ml-2">
+                          Saved: ${getPackageDiscount(selectedBooking)}
+                        </span>
+                      </p>
+                    )}
                   </div>
                   <div>
                     <p className="font-medium">Status</p>
