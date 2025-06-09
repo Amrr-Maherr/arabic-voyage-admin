@@ -13,9 +13,9 @@ const BackgroundManager = () => {
   const backgroundSections = [
     {
       id: 'dashboard',
-      title: 'Dashboard Page',
+      title: 'Home Page',
       titleAr: 'صفحة لوحة التحكم',
-      description: 'Background for the main dashboard',
+      description: 'Background for the Home page',
       descriptionAr: 'خلفية الصفحة الرئيسية للوحة التحكم',
       currentPreview: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
       gradient: 'travel-gradient'
