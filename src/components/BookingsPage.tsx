@@ -3,8 +3,23 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, CheckCircle, XCircle, Clock, Plane, Hotel, Car, Link } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Eye, CheckCircle, XCircle, Clock, Plane, Hotel, Car, Link, Edit } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const bookingFormSchema = z.object({
+  customer: z.string().min(1, 'Customer name is required'),
+  date: z.string().min(1, 'Date is required'),
+  amount: z.number().min(0, 'Amount must be positive'),
+  flightCosts: z.number().min(0, 'Flight costs must be positive').optional(),
+});
+
+type BookingFormData = z.infer<typeof bookingFormSchema>;
 
 interface Booking {
   id: string;
@@ -17,6 +32,7 @@ interface Booking {
   packagePrice?: number;
   linkedBookingId?: string;
   linkedBooking?: Booking;
+  flightCosts?: number;
 }
 
 const initialBookings: Booking[] = [
@@ -28,6 +44,7 @@ const initialBookings: Booking[] = [
     amount: 750,
     status: 'confirmed',
     linkedBookingId: 'BKG001H',
+    flightCosts: 100,
   },
   {
     id: 'BKG001H',
@@ -46,6 +63,7 @@ const initialBookings: Booking[] = [
     amount: 800,
     status: 'pending',
     linkedBookingId: 'BKG002H',
+    flightCosts: 120,
   },
   {
     id: 'BKG002H',
@@ -72,6 +90,7 @@ const initialBookings: Booking[] = [
     amount: 900,
     status: 'cancelled',
     linkedBookingId: 'BKG004H',
+    flightCosts: 150,
   },
   {
     id: 'BKG004H',
@@ -90,6 +109,7 @@ const initialBookings: Booking[] = [
     amount: 1000,
     status: 'confirmed',
     linkedBookingId: 'BKG005H',
+    flightCosts: 200,
   },
   {
     id: 'BKG005H',
@@ -124,6 +144,18 @@ const BookingsPage = () => {
   });
   
   const [isRTL] = useState(document.dir === 'rtl');
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const form = useForm<BookingFormData>({
+    resolver: zodResolver(bookingFormSchema),
+    defaultValues: {
+      customer: '',
+      date: '',
+      amount: 0,
+      flightCosts: 0,
+    },
+  });
 
   // Get main bookings (flights and standalone services) to avoid duplicates
   const mainBookings = bookings.filter(booking => 
@@ -155,6 +187,52 @@ const BookingsPage = () => {
       title: 'Booking Status Updated',
       description: `Booking ${id} status updated to ${status}`,
     });
+  };
+
+  const openEditDialog = (booking: Booking) => {
+    setEditingBooking(booking);
+    form.reset({
+      customer: booking.customer,
+      date: booking.date,
+      amount: booking.amount,
+      flightCosts: booking.flightCosts || 0,
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const onEditSubmit = (data: BookingFormData) => {
+    if (!editingBooking) return;
+
+    setBookings(prevBookings =>
+      prevBookings.map(booking => {
+        if (booking.id === editingBooking.id) {
+          return {
+            ...booking,
+            customer: data.customer,
+            date: data.date,
+            amount: data.amount,
+            flightCosts: data.flightCosts,
+          };
+        }
+        // Also update linked booking customer and date
+        if (booking.linkedBookingId === editingBooking.id) {
+          return {
+            ...booking,
+            customer: data.customer,
+            date: data.date,
+          };
+        }
+        return booking;
+      })
+    );
+
+    toast({
+      title: isRTL ? 'تم تحديث الحجز' : 'Booking Updated',
+      description: isRTL ? `تم تحديث تفاصيل الحجز ${editingBooking.id}` : `Booking ${editingBooking.id} details updated successfully`,
+    });
+
+    setIsEditDialogOpen(false);
+    setEditingBooking(null);
   };
 
   const renderBookingRow = (booking: Booking) => (
@@ -189,6 +267,11 @@ const BookingsPage = () => {
       <td className={`p-3 text-foreground ${isRTL ? 'text-right' : ''}`}>
         <div>
           <div className="font-medium">${booking.amount}</div>
+          {booking.flightCosts && (
+            <div className="text-xs text-muted-foreground">
+              {isRTL ? 'تكاليف الطيران' : 'Flight costs'}: ${booking.flightCosts}
+            </div>
+          )}
           {booking.linkedBooking && (
             <div className="text-xs text-muted-foreground">
               + ${booking.linkedBooking.amount} ({isRTL ? 'فندق' : 'hotel'})
@@ -211,6 +294,13 @@ const BookingsPage = () => {
       </td>
       <td className="p-3">
         <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => openEditDialog(booking)}
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
           <Button
             size="sm"
             variant="outline"
@@ -354,6 +444,96 @@ const BookingsPage = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isRTL ? 'تعديل تفاصيل الحجز' : 'Edit Booking Details'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onEditSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="customer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isRTL ? 'اسم العميل' : 'Customer Name'}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isRTL ? 'تاريخ الحجز' : 'Booking Date'}</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isRTL ? 'المبلغ' : 'Amount'}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {editingBooking?.type === 'flight' && (
+                <FormField
+                  control={form.control}
+                  name="flightCosts"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isRTL ? 'تكاليف الطيران' : 'Flight Costs'}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          {...field} 
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <Button type="submit">
+                  {isRTL ? 'حفظ التغييرات' : 'Save Changes'}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                  {isRTL ? 'إلغاء' : 'Cancel'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
