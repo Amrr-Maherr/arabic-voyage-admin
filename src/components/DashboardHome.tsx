@@ -102,25 +102,6 @@ const DashboardHome = () => {
           ))}
         </div>
       </div>
-
-      {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
-            <Plane className="w-6 h-6 text-blue-500 mr-2" />
-            <span className="text-blue-700 font-medium">Add New Flight</span>
-          </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
-            <Building2 className="w-6 h-6 text-green-500 mr-2" />
-            <span className="text-green-700 font-medium">Add New Hotel</span>
-          </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-purple-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
-            <Car className="w-6 h-6 text-purple-500 mr-2" />
-            <span className="text-purple-700 font-medium">Add New Limousine</span>
-          </button>
-        </div>
-      </div>
     </div>
   );
 };
