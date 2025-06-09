@@ -17,6 +17,7 @@ const bookingFormSchema = z.object({
   date: z.string().min(1, 'Date is required'),
   amount: z.number().min(0, 'Amount must be positive'),
   flightCosts: z.number().min(0, 'Flight costs must be positive').optional(),
+  hotelAmount: z.number().min(0, 'Hotel amount must be positive').optional(),
 });
 
 type BookingFormData = z.infer<typeof bookingFormSchema>;
@@ -154,6 +155,7 @@ const BookingsPage = () => {
       date: '',
       amount: 0,
       flightCosts: 0,
+      hotelAmount: 0,
     },
   });
 
@@ -196,6 +198,7 @@ const BookingsPage = () => {
       date: booking.date,
       amount: booking.amount,
       flightCosts: booking.flightCosts || 0,
+      hotelAmount: booking.linkedBooking?.amount || 0,
     });
     setIsEditDialogOpen(true);
   };
@@ -214,12 +217,13 @@ const BookingsPage = () => {
             flightCosts: data.flightCosts,
           };
         }
-        // Also update linked booking customer and date
+        // Also update linked booking (hotel) customer, date, and amount
         if (booking.linkedBookingId === editingBooking.id) {
           return {
             ...booking,
             customer: data.customer,
             date: data.date,
+            amount: data.hotelAmount || booking.amount,
           };
         }
         return booking;
@@ -489,7 +493,11 @@ const BookingsPage = () => {
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{isRTL ? 'المبلغ' : 'Amount'}</FormLabel>
+                    <FormLabel>
+                      {editingBooking?.type === 'flight' && (isRTL ? 'سعر الطيران' : 'Flight Price')}
+                      {editingBooking?.type === 'limousine' && (isRTL ? 'سعر الليموزين' : 'Limousine Price')}
+                      {editingBooking?.type === 'hotel' && (isRTL ? 'سعر الفندق' : 'Hotel Price')}
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -503,23 +511,45 @@ const BookingsPage = () => {
               />
 
               {editingBooking?.type === 'flight' && (
-                <FormField
-                  control={form.control}
-                  name="flightCosts"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{isRTL ? 'تكاليف الطيران' : 'Flight Costs'}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          {...field} 
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <>
+                  <FormField
+                    control={form.control}
+                    name="flightCosts"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{isRTL ? 'تكاليف الطيران' : 'Flight Costs'}</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            {...field} 
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {editingBooking?.linkedBooking && (
+                    <FormField
+                      control={form.control}
+                      name="hotelAmount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{isRTL ? 'سعر الفندق المرتبط' : 'Linked Hotel Price'}</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              {...field} 
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                />
+                </>
               )}
 
               <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
