@@ -30,14 +30,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const handleMenuClick = (itemId: string) => {
-    if (itemId === 'color-settings') {
-      window.location.href = '/color-settings';
-    } else {
-      setCurrentPage(itemId);
-    }
-  };
-
   return (
     <div className="bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200">
       {/* Logo */}
@@ -63,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => handleMenuClick(item.id)}
+                  onClick={() => setCurrentPage(item.id)}
                   className={`sidebar-item w-full text-left ${isActive ? 'active' : ''}`}
                 >
                   <Icon className="w-5 h-5 mr-3" />

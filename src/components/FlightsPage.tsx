@@ -4,8 +4,8 @@ import { Plus, Edit, Trash2, Plane, Clock, MapPin } from 'lucide-react';
 
 const FlightsPage = () => {
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const flights = [
+  const [editingFlight, setEditingFlight] = useState(null);
+  const [flights, setFlights] = useState([
     {
       id: 1,
       flightNumber: 'EG205',
@@ -48,7 +48,23 @@ const FlightsPage = () => {
       seats: 200,
       bookedSeats: 167
     }
-  ];
+  ]);
+
+  const handleEdit = (flight) => {
+    setEditingFlight(flight);
+    setShowAddForm(true);
+  };
+
+  const handleDelete = (id) => {
+    setFlights(flights.filter(flight => flight.id !== id));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    setShowAddForm(false);
+    setEditingFlight(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -59,7 +75,10 @@ const FlightsPage = () => {
           <p className="text-gray-600">Manage flight schedules and bookings</p>
         </div>
         <button
-          onClick={() => setShowAddForm(!showAddForm)}
+          onClick={() => {
+            setEditingFlight(null);
+            setShowAddForm(!showAddForm);
+          }}
           className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors flex items-center space-x-2"
         >
           <Plus className="w-5 h-5" />
@@ -67,16 +86,19 @@ const FlightsPage = () => {
         </button>
       </div>
 
-      {/* Add Flight Form */}
+      {/* Add/Edit Flight Form */}
       {showAddForm && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Flight</h3>
-          <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {editingFlight ? 'Edit Flight' : 'Add New Flight'}
+          </h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Flight Number</label>
               <input
                 type="text"
                 placeholder="e.g., EG205"
+                defaultValue={editingFlight?.flightNumber || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -85,6 +107,7 @@ const FlightsPage = () => {
               <input
                 type="text"
                 placeholder="e.g., EgyptAir"
+                defaultValue={editingFlight?.airline || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -93,6 +116,7 @@ const FlightsPage = () => {
               <input
                 type="text"
                 placeholder="e.g., Cairo (CAI)"
+                defaultValue={editingFlight?.departure || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -101,6 +125,7 @@ const FlightsPage = () => {
               <input
                 type="text"
                 placeholder="e.g., Dubai (DXB)"
+                defaultValue={editingFlight?.arrival || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -108,6 +133,7 @@ const FlightsPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Departure Time</label>
               <input
                 type="time"
+                defaultValue={editingFlight?.departureTime || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -115,6 +141,7 @@ const FlightsPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Arrival Time</label>
               <input
                 type="time"
+                defaultValue={editingFlight?.arrivalTime || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -122,6 +149,7 @@ const FlightsPage = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
               <input
                 type="date"
+                defaultValue={editingFlight?.date || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -130,6 +158,7 @@ const FlightsPage = () => {
               <input
                 type="number"
                 placeholder="Enter ticket price"
+                defaultValue={editingFlight?.price || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
@@ -138,13 +167,17 @@ const FlightsPage = () => {
               <input
                 type="number"
                 placeholder="Enter seat capacity"
+                defaultValue={editingFlight?.seats || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               />
             </div>
             <div className="lg:col-span-3 flex justify-end space-x-3">
               <button
                 type="button"
-                onClick={() => setShowAddForm(false)}
+                onClick={() => {
+                  setShowAddForm(false);
+                  setEditingFlight(null);
+                }}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
@@ -153,7 +186,7 @@ const FlightsPage = () => {
                 type="submit"
                 className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
               >
-                Add Flight
+                {editingFlight ? 'Update Flight' : 'Add Flight'}
               </button>
             </div>
           </form>
@@ -249,10 +282,16 @@ const FlightsPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-800">
+                      <button 
+                        onClick={() => handleEdit(flight)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-800">
+                      <button 
+                        onClick={() => handleDelete(flight.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

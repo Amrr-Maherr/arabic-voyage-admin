@@ -9,6 +9,7 @@ import LimousinesPage from './LimousinesPage';
 import BackgroundManager from './BackgroundManager';
 import BookingsPage from './BookingsPage';
 import SettingsPage from './SettingsPage';
+import ColorSettings from './ColorSettings';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -28,6 +29,8 @@ const Dashboard = () => {
         return <BookingsPage />;
       case 'background':
         return <BackgroundManager />;
+      case 'color-settings':
+        return <ColorSettings />;
       case 'settings':
         return <SettingsPage />;
       default:
