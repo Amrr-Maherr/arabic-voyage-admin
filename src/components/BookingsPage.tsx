@@ -38,17 +38,32 @@ const BookingsPage = () => {
     },
   });
 
+  // Calculate stats for each booking type
+  const flightBookings = bookings.filter(booking => booking.type === 'flight');
+  const hotelBookings = bookings.filter(booking => booking.type === 'hotel');
+  const limousineBookings = bookings.filter(booking => booking.type === 'limousine');
+
+  const flightStats = {
+    count: flightBookings.length,
+    totalAmount: flightBookings.reduce((sum, booking) => sum + booking.amount, 0)
+  };
+
+  const hotelStats = {
+    count: hotelBookings.length,
+    totalAmount: hotelBookings.reduce((sum, booking) => sum + booking.amount, 0)
+  };
+
+  const limousineStats = {
+    count: limousineBookings.length,
+    totalAmount: limousineBookings.reduce((sum, booking) => sum + booking.amount, 0)
+  };
+
   // Get main bookings (flights and standalone services) to avoid duplicates
   const mainBookings = bookings.filter(booking => 
     booking.type === 'flight' || 
     booking.type === 'limousine' || 
     (booking.type === 'hotel' && !booking.linkedBookingId)
   );
-
-  const totalBookings = mainBookings.length;
-  const confirmedBookings = mainBookings.filter(booking => booking.status === 'confirmed').length;
-  const pendingBookings = mainBookings.filter(booking => booking.status === 'pending').length;
-  const cancelledBookings = mainBookings.filter(booking => booking.status === 'cancelled').length;
 
   const updateBookingStatus = (id: string, status: Booking['status']) => {
     setBookings(prevBookings =>
@@ -127,10 +142,12 @@ const BookingsPage = () => {
       </div>
 
       <BookingStatsCards
-        totalBookings={totalBookings}
-        confirmedBookings={confirmedBookings}
-        pendingBookings={pendingBookings}
-        cancelledBookings={cancelledBookings}
+        flightBookings={flightStats.count}
+        flightTotalAmount={flightStats.totalAmount}
+        hotelBookings={hotelStats.count}
+        hotelTotalAmount={hotelStats.totalAmount}
+        limousineBookings={limousineStats.count}
+        limousineTotalAmount={limousineStats.totalAmount}
         isRTL={isRTL}
       />
 
