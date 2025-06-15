@@ -1,13 +1,19 @@
-
 import React, { useState } from 'react';
 import { Upload, Image, Video, Eye, Trash2 } from 'lucide-react';
 
 const BackgroundManager = () => {
-  const [selectedFiles, setSelectedFiles] = useState<{[key: string]: File | null}>({
+  const [selectedFiles, setSelectedFiles] = useState({
     dashboard: null,
     flights: null,
     hotels: null,
     limousines: null
+  });
+
+  const [content, setContent] = useState({
+    dashboard: { title: '', text: '', buttonText: '' },
+    flights: { title: '', text: '', buttonText: '' },
+    hotels: { title: '', text: '', buttonText: '' },
+    limousines: { title: '', text: '', buttonText: '' }
   });
 
   const backgroundSections = [
@@ -49,19 +55,27 @@ const BackgroundManager = () => {
     }
   ];
 
-  const handleFileSelect = (sectionId: string, file: File) => {
+  const handleFileSelect = (sectionId, file) => {
     setSelectedFiles(prev => ({
       ...prev,
       [sectionId]: file
     }));
   };
 
-  const handleUpload = (sectionId: string) => {
+  const handleContentChange = (sectionId, field, value) => {
+    setContent(prev => ({
+      ...prev,
+      [sectionId]: {
+        ...prev[sectionId],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleUpload = (sectionId) => {
     const file = selectedFiles[sectionId];
     if (file) {
-      // Simulate upload process
       console.log(`Uploading ${file.name} for ${sectionId} section`);
-      // Reset selected file after upload
       setSelectedFiles(prev => ({
         ...prev,
         [sectionId]: null
@@ -69,8 +83,12 @@ const BackgroundManager = () => {
     }
   };
 
-  const handleRemoveBackground = (sectionId: string) => {
+  const handleRemoveBackground = (sectionId) => {
     console.log(`Removing background for ${sectionId} section`);
+    setContent(prev => ({
+      ...prev,
+      [sectionId]: { title: '', text: '', buttonText: '' }
+    }));
   };
 
   return (
@@ -78,7 +96,7 @@ const BackgroundManager = () => {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Background Manager</h1>
-        <p className="text-gray-600">Manage background images and videos for each page section</p>
+        <p className="text-gray-600">Manage background images, videos, titles, text, and buttons for each page section</p>
       </div>
 
       {/* Background Sections */}
@@ -101,12 +119,48 @@ const BackgroundManager = () => {
                     alt={`${section.title} background`}
                     className="w-full h-32 object-cover rounded-lg"
                   />
-                  <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity p-4">
+                    <h4 className="text-white font-semibold mb-1">{content[section.id].title || 'Sample Title'}</h4>
+                    <p className="text-white text-sm mb-2">{content[section.id].text || 'Sample text goes here'}</p>
                     <button className="bg-white text-gray-800 px-3 py-1 rounded-lg text-sm flex items-center space-x-2">
                       <Eye className="w-4 h-4" />
-                      <span>Preview</span>
+                      <span>{content[section.id].buttonText || 'Explore Now'}</span>
                     </button>
                   </div>
+                </div>
+              </div>
+
+              {/* Content Inputs */}
+              <div className="space-y-3 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={content[section.id].title}
+                    onChange={(e) => handleContentChange(section.id, 'title', e.target.value)}
+                    placeholder="Enter title"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+                  <textarea
+                    value={content[section.id].text}
+                    onChange={(e) => handleContentChange(section.id, 'text', e.target.value)}
+                    placeholder="Enter description text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                  <input
+                    type="text"
+                    value={content[section.id].buttonText}
+                    onChange={(e) => handleContentChange(section.id, 'buttonText', e.target.value)}
+                    placeholder="Enter button text"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
 
@@ -200,7 +254,7 @@ const BackgroundManager = () => {
         <ul className="text-sm text-blue-800 space-y-1">
           <li>• Use high-resolution images (1920x1080 or higher) for best quality</li>
           <li>• Keep file sizes under 10MB for faster loading</li>
-          <li>• Consider using subtle overlays to ensure text readability</li>
+          <li>• Use concise titles, text, and button text for better readability</li>
           <li>• Videos should be under 30 seconds for optimal performance</li>
         </ul>
       </div>

@@ -28,63 +28,8 @@ const SettingsPage = () => {
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Company Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <User className="w-5 h-5" />
-              {isRTL ? 'معلومات الشركة' : 'Company Information'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="companyName">
-                {isRTL ? 'اسم الشركة' : 'Company Name'}
-              </Label>
-              <Input
-                id="companyName"
-                value={settings.companyName}
-                onChange={(e) => handleInputChange('companyName', e.target.value)}
-                className={isRTL ? 'text-right' : ''}
-              />
-            </div>
-            <div>
-              <Label htmlFor="email">
-                {isRTL ? 'البريد الإلكتروني' : 'Email'}
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={settings.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className={isRTL ? 'text-right' : ''}
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone">
-                {isRTL ? 'رقم الهاتف' : 'Phone Number'}
-              </Label>
-              <Input
-                id="phone"
-                value={settings.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                className={isRTL ? 'text-right' : ''}
-              />
-            </div>
-            <div>
-              <Label htmlFor="address">
-                {isRTL ? 'العنوان' : 'Address'}
-              </Label>
-              <Textarea
-                id="address"
-                value={settings.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                className={isRTL ? 'text-right' : ''}
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Security Settings */}
         <Card>

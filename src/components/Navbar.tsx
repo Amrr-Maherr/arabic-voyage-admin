@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { User, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface NavbarProps {
   isRTL: boolean;
@@ -20,15 +21,13 @@ const Navbar: React.FC<NavbarProps> = ({ isRTL, setIsRTL }) => {
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
             <User className="w-5 h-5 text-primary-foreground" />
           </div>
-          <div className={isRTL ? 'text-right' : 'text-left'}>
-            <p className="text-sm font-medium text-foreground">Ahmed Zaki</p>
-            <p className="text-xs text-muted-foreground">Administrator</p>
-          </div>
         </div>
 
         {/* Logout */}
         <button className="p-2 rounded-lg hover:bg-muted transition-colors text-destructive">
+          <Link to="/">
           <LogOut className="w-5 h-5" />
+          </Link>
         </button>
       </div>
     </header>

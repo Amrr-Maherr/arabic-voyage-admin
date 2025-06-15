@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Palette, Save, RotateCcw, Eye } from 'lucide-react';
+import { Palette, Save, RotateCcw, Eye, Trash2, Plus, Trash } from 'lucide-react';
 
 const ColorSettings = () => {
   const [isRTL] = useState(document.dir === 'rtl');
@@ -15,19 +14,44 @@ const ColorSettings = () => {
     background: '#ffffff',
     foreground: '#0f172a'
   });
-
+  const [tickerItems, setTickerItems] = useState<string[]>([]);
+  const [newTickerText, setNewTickerText] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
 
-  // Load saved colors from localStorage on component mount
+  // Load saved colors and ticker items from localStorage on component mount
   useEffect(() => {
     const savedColors = localStorage.getItem('siteColors');
     if (savedColors) {
       setColors(JSON.parse(savedColors));
     }
+    const savedTickerItems = localStorage.getItem('tickerItems');
+    if (savedTickerItems) {
+      setTickerItems(JSON.parse(savedTickerItems));
+    }
   }, []);
 
   const handleColorChange = (colorKey: string, value: string) => {
     setColors(prev => ({ ...prev, [colorKey]: value }));
+  };
+
+  const handleAddTickerItem = () => {
+    if (newTickerText.trim()) {
+      const updatedItems = [...tickerItems, newTickerText.trim()];
+      setTickerItems(updatedItems);
+      setNewTickerText('');
+      localStorage.setItem('tickerItems', JSON.stringify(updatedItems));
+    }
+  };
+
+  const handleDeleteTickerItem = (index: number) => {
+    const updatedItems = tickerItems.filter((_, i) => i !== index);
+    setTickerItems(updatedItems);
+    localStorage.setItem('tickerItems', JSON.stringify(updatedItems));
+  };
+
+  const handleClearTickerItems = () => {
+    setTickerItems([]);
+    localStorage.removeItem('tickerItems');
   };
 
   const applyColors = () => {
@@ -131,23 +155,12 @@ const ColorSettings = () => {
       <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {isRTL ? 'إعدادات الألوان' : 'Color Settings'}
+            {isRTL ? 'إعدادات الألوان وشريط الأخبار' : 'Color & Ticker Settings'}
           </h1>
-          <p className="text-gray-600">
-            {isRTL ? 'تخصيص ألوان الموقع' : 'Customize your website colors'}
-          </p>
         </div>
-        
-        <Button
-          onClick={togglePreview}
-          variant={previewMode ? "default" : "outline"}
-          className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}
-        >
-          <Eye className="w-4 h-4" />
-          {isRTL ? (previewMode ? 'إيقاف المعاينة' : 'معاينة') : (previewMode ? 'Stop Preview' : 'Preview')}
-        </Button>
       </div>
 
+      {/* Color Settings Card */}
       <Card>
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -216,14 +229,113 @@ const ColorSettings = () => {
               <RotateCcw className="w-4 h-4 mr-2" />
               {isRTL ? 'إعادة تعيين' : 'Reset'}
             </Button>
+            <Button onClick={togglePreview} variant="outline">
+              <Eye className="w-4 h-4 mr-2" />
+              {isRTL ? 'معاينة' : 'Preview'}
+            </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Ticker Settings Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <Eye className="w-5 h-5" />
+            {isRTL ? 'إعدادات شريط الأخبار' : 'News Ticker Settings'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Add New Ticker Item */}
+          <div className="space-y-2">
+            <Label htmlFor="ticker-input" className="text-sm font-medium">
+              {isRTL ? 'إضافة نص جديد لشريط الأخبار' : 'Add New Ticker Text'}
+            </Label>
+            <p className="text-xs text-gray-500 mb-2">
+              {isRTL ? 'أدخل النص الذي سيظهر في شريط الأخبار' : 'Enter text to display in the news ticker'}
+            </p>
+            <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Input
+                id="ticker-input"
+                type="text"
+                value={newTickerText}
+                onChange={(e) => setNewTickerText(e.target.value)}
+                placeholder={isRTL ? 'أدخل نص الخبر...' : 'Enter ticker text...'}
+                className={`flex-1 ${isRTL ? 'text-right' : ''}`}
+              />
+              <Button onClick={handleAddTickerItem} className="travel-gradient text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                {isRTL ? 'إضافة' : 'Add'}
+              </Button>
+              <Button 
+                onClick={handleClearTickerItems} 
+                variant="outline" 
+                className="text-red-500 hover:text-red-700 border-red-300 hover:bg-red-50"
+                disabled={tickerItems.length === 0}
+              >
+                <Trash className="w-4 h-4 mr-2" />
+                {isRTL ? 'مسح الكل' : 'Clear All'}
+              </Button>
+            </div>
+            {/* Ticker Items List */}
+            {tickerItems.length > 0 && (
+              <ul className="space-y-2 mt-3">
+                {tickerItems.map((item, index) => (
+                  <li 
+                    key={index} 
+                    className={`flex items-center justify-between bg-gray-50 rounded-lg p-3 ${isRTL ? 'flex-row-reverse' : ''}`}
+                  >
+                    <span 
+                      className={`text-sm break-words overflow-wrap-anywhere ${isRTL ? 'text-right' : ''}`}
+                      style={{ maxWidth: 'calc(100% - 40px)' }}
+                    >
+                      {item}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteTickerItem(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Ticker Preview */}
+          {tickerItems.length > 0 && (
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold mb-4">
+                {isRTL ? 'معاينة شريط الأخبار' : 'Ticker Preview'}
+              </h3>
+              <div
+                className="bg-gray-200 rounded-lg p-3"
+                style={{
+                  backgroundColor: colors.background,
+                  color: colors.foreground,
+                  direction: isRTL ? 'rtl' : 'ltr'
+                }}
+              >
+                <ul className="space-y-2">
+                  {tickerItems.map((item, index) => (
+                    <li key={index} className="text-sm break-words overflow-wrap-anywhere">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Tips Section */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="text-sm font-medium text-blue-900 mb-2">
-          {isRTL ? 'نصائح لاختيار الألوان:' : 'Color Selection Tips:'}
+          {isRTL ? 'نصائح لإعدادات الألوان وشريط الأخبار:' : 'Color & Ticker Tips:'}
         </h4>
         <ul className="text-sm text-blue-800 space-y-1">
           <li>
@@ -233,10 +345,10 @@ const ColorSettings = () => {
             {isRTL ? '• استخدم الألوان الفاتحة للخلفيات والألوان الداكنة للنصوص' : '• Use light colors for backgrounds and dark colors for text'}
           </li>
           <li>
-            {isRTL ? '• اختبر الألوان على أجهزة مختلفة قبل التطبيق النهائي' : '• Test colors on different devices before final application'}
+            {isRTL ? '• اجعل نصوص شريط الأخبار موجزة وواضحة' : '• Keep ticker texts concise and clear'}
           </li>
           <li>
-            {isRTL ? '• احفظ نسخة من الألوان الحالية قبل التغيير' : '• Save a copy of current colors before changing'}
+            {isRTL ? '• اختبر الألوان والنصوص على أجهزة مختلفة قبل التطبيق النهائي' : '• Test colors and ticker texts on different devices before final application'}
           </li>
         </ul>
       </div>
