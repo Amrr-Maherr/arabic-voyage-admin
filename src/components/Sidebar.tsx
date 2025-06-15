@@ -8,7 +8,8 @@ import {
   Image, 
   Calendar,
   Settings,
-  MapPin
+  MapPin,
+  Palette
 } from 'lucide-react';
 import LogoImage from "../../public/logo (1) 1.png"
 interface SidebarProps {
@@ -25,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
     { id: 'limousines', label: 'Manage Limousines', icon: Car },
     { id: 'bookings', label: 'All Bookings', icon: Calendar },
     { id: 'background', label: 'Background Manager', icon: Image },
+    { id: 'color-settings', label: 'Color Settings', icon: Palette },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

@@ -4,8 +4,8 @@ import { Plus, Star, Edit, Trash2, MapPin, Wifi, Coffee, Waves } from 'lucide-re
 
 const HotelsPage = () => {
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const hotels = [
+  const [editingHotel, setEditingHotel] = useState(null);
+  const [hotels, setHotels] = useState([
     {
       id: 1,
       name: 'Nile Palace',
@@ -39,7 +39,23 @@ const HotelsPage = () => {
       image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300',
       services: ['Wi-Fi', 'Pool']
     }
-  ];
+  ]);
+
+  const handleEdit = (hotel) => {
+    setEditingHotel(hotel);
+    setShowAddForm(true);
+  };
+
+  const handleDelete = (id) => {
+    setHotels(hotels.filter(hotel => hotel.id !== id));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    setShowAddForm(false);
+    setEditingHotel(null);
+  };
 
   const renderStars = (count: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -72,7 +88,10 @@ const HotelsPage = () => {
           <p className="text-gray-600">Manage your hotel inventory and bookings</p>
         </div>
         <button
-          onClick={() => setShowAddForm(!showAddForm)}
+          onClick={() => {
+            setEditingHotel(null);
+            setShowAddForm(!showAddForm);
+          }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus className="w-5 h-5" />
@@ -80,16 +99,19 @@ const HotelsPage = () => {
         </button>
       </div>
 
-      {/* Add Hotel Form */}
+      {/* Add/Edit Hotel Form */}
       {showAddForm && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Hotel</h3>
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {editingHotel ? 'Edit Hotel' : 'Add New Hotel'}
+          </h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Hotel Name</label>
               <input
                 type="text"
                 placeholder="Enter hotel name"
+                defaultValue={editingHotel?.name || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -98,12 +120,16 @@ const HotelsPage = () => {
               <input
                 type="text"
                 placeholder="Enter city"
+                defaultValue={editingHotel?.city || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Star Rating</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select 
+                defaultValue={editingHotel?.stars || ''}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
                 <option value="">Select rating</option>
                 <option value="1">1 Star</option>
                 <option value="2">2 Stars</option>
@@ -117,6 +143,7 @@ const HotelsPage = () => {
               <input
                 type="number"
                 placeholder="Enter room count"
+                defaultValue={editingHotel?.rooms || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -125,6 +152,7 @@ const HotelsPage = () => {
               <input
                 type="number"
                 placeholder="Enter price"
+                defaultValue={editingHotel?.price || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -168,7 +196,10 @@ const HotelsPage = () => {
             <div className="md:col-span-2 flex justify-end space-x-3">
               <button
                 type="button"
-                onClick={() => setShowAddForm(false)}
+                onClick={() => {
+                  setShowAddForm(false);
+                  setEditingHotel(null);
+                }}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
@@ -177,7 +208,7 @@ const HotelsPage = () => {
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Add Hotel
+                {editingHotel ? 'Update Hotel' : 'Add Hotel'}
               </button>
             </div>
           </form>
@@ -262,10 +293,16 @@ const HotelsPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-800">
+                      <button 
+                        onClick={() => handleEdit(hotel)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-800">
+                      <button 
+                        onClick={() => handleDelete(hotel.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

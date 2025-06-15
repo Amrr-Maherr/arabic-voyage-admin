@@ -1,36 +1,46 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Plane, Building2, Car, DollarSign } from 'lucide-react';
 
 interface BookingStatsCardsProps {
-  totalBookings: number;
-  confirmedBookings: number;
-  pendingBookings: number;
-  cancelledBookings: number;
+  flightBookings: number;
+  flightTotalAmount: number;
+  hotelBookings: number;
+  hotelTotalAmount: number;
+  limousineBookings: number;
+  limousineTotalAmount: number;
   isRTL: boolean;
 }
 
 const BookingStatsCards: React.FC<BookingStatsCardsProps> = ({
-  totalBookings,
-  confirmedBookings,
-  pendingBookings,
-  cancelledBookings,
+  flightBookings,
+  flightTotalAmount,
+  hotelBookings,
+  hotelTotalAmount,
+  limousineBookings,
+  limousineTotalAmount,
   isRTL,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <Eye className="w-5 h-5" />
-            {isRTL ? 'إجمالي الحجوزات' : 'Total Bookings'}
+            <Plane className="w-5 h-5 text-blue-500" />
+            {isRTL ? 'حجوزات الطيران' : 'Flight Bookings'}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{totalBookings}</div>
-          <p className="text-sm text-muted-foreground">
-            {isRTL ? 'عدد جميع الحجوزات' : 'Number of all bookings'}
+          <div className="text-3xl font-bold text-blue-500">{flightBookings}</div>
+          <div className="flex items-center gap-1 mt-2">
+            <DollarSign className="w-4 h-4 text-muted-foreground" />
+            <span className="text-lg font-semibold text-muted-foreground">
+              ${flightTotalAmount.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isRTL ? 'إجمالي قيمة حجوزات الطيران' : 'Total flight bookings value'}
           </p>
         </CardContent>
       </Card>
@@ -38,14 +48,20 @@ const BookingStatsCards: React.FC<BookingStatsCardsProps> = ({
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <CheckCircle className="w-5 h-5 text-green-500" />
-            {isRTL ? 'الحجوزات المؤكدة' : 'Confirmed Bookings'}
+            <Building2 className="w-5 h-5 text-green-500" />
+            {isRTL ? 'حجوزات الفنادق' : 'Hotel Bookings'}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-green-500">{confirmedBookings}</div>
-          <p className="text-sm text-muted-foreground">
-            {isRTL ? 'عدد الحجوزات المؤكدة' : 'Number of confirmed bookings'}
+          <div className="text-3xl font-bold text-green-500">{hotelBookings}</div>
+          <div className="flex items-center gap-1 mt-2">
+            <DollarSign className="w-4 h-4 text-muted-foreground" />
+            <span className="text-lg font-semibold text-muted-foreground">
+              ${hotelTotalAmount.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isRTL ? 'إجمالي قيمة حجوزات الفنادق' : 'Total hotel bookings value'}
           </p>
         </CardContent>
       </Card>
@@ -53,29 +69,20 @@ const BookingStatsCards: React.FC<BookingStatsCardsProps> = ({
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <Clock className="w-5 h-5 text-yellow-500" />
-            {isRTL ? 'الحجوزات المعلقة' : 'Pending Bookings'}
+            <Car className="w-5 h-5 text-purple-500" />
+            {isRTL ? 'حجوزات الليموزين' : 'Limousine Bookings'}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-yellow-500">{pendingBookings}</div>
-          <p className="text-sm text-muted-foreground">
-            {isRTL ? 'عدد الحجوزات المعلقة' : 'Number of pending bookings'}
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="card-hover">
-        <CardHeader>
-          <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <XCircle className="w-5 h-5 text-red-500" />
-            {isRTL ? 'الحجوزات الملغاة' : 'Cancelled Bookings'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-red-500">{cancelledBookings}</div>
-          <p className="text-sm text-muted-foreground">
-            {isRTL ? 'عدد الحجوزات الملغاة' : 'Number of cancelled bookings'}
+          <div className="text-3xl font-bold text-purple-500">{limousineBookings}</div>
+          <div className="flex items-center gap-1 mt-2">
+            <DollarSign className="w-4 h-4 text-muted-foreground" />
+            <span className="text-lg font-semibold text-muted-foreground">
+              ${limousineTotalAmount.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isRTL ? 'إجمالي قيمة حجوزات الليموزين' : 'Total limousine bookings value'}
           </p>
         </CardContent>
       </Card>
