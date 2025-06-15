@@ -10,7 +10,7 @@ import {
   Settings,
   MapPin
 } from 'lucide-react';
-
+import LogoImage from "../../public/logo (1) 1.png"
 interface SidebarProps {
   currentPage: string;
   setCurrentPage: (page: string) => void;
@@ -33,12 +33,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 travel-gradient rounded-lg flex items-center justify-center">
-            <MapPin className="w-6 h-6 text-white" />
+          <div className="w-10 h-10  rounded-lg flex items-center justify-center">
+            <img src={LogoImage} alt="" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">TravelBook</h1>
-            <p className="text-sm text-gray-500">Travel Management</p>
+            <h1 className="text-md font-bold text-gray-800">Qafalah Alayman</h1>
           </div>
         </div>
       </div>

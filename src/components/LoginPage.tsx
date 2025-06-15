@@ -41,9 +41,8 @@ const LoginPage = () => {
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
               <Plane className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-white">TravelBook</h1>
+            <h1 className="text-3xl font-bold text-white">Qafalah Alayman</h1>
           </div>
-          <p className="text-white/80 text-lg">Admin Dashboard</p>
         </div>
 
         {/* Login Card */}
@@ -97,24 +96,7 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={formData.rememberMe}
-                    onCheckedChange={(checked) => handleInputChange('rememberMe', checked as boolean)}
-                  />
-                  <Label htmlFor="rememberMe" className="text-sm text-gray-600">
-                    Remember me
-                  </Label>
-                </div>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                  Forgot password?
-                </Link>
-              </div>
-
-              {/* Login Button */}
+             {/* Login Button */}
               <Button
                 type="submit"
                 className="w-full h-12 travel-gradient text-white font-medium text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"

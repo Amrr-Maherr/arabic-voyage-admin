@@ -43,9 +43,8 @@ const RegisterPage = () => {
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
               <Plane className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-white">TravelBook</h1>
+            <h1 className="text-3xl font-bold text-white">Qafalah Alayman</h1>
           </div>
-          <p className="text-white/80 text-lg">Admin Dashboard</p>
         </div>
 
         {/* Register Card */}
