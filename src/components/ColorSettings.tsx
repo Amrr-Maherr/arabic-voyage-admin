@@ -229,10 +229,6 @@ const ColorSettings = () => {
               <RotateCcw className="w-4 h-4 mr-2" />
               {isRTL ? 'إعادة تعيين' : 'Reset'}
             </Button>
-            <Button onClick={togglePreview} variant="outline">
-              <Eye className="w-4 h-4 mr-2" />
-              {isRTL ? 'معاينة' : 'Preview'}
-            </Button>
           </div>
         </CardContent>
       </Card>
@@ -281,16 +277,8 @@ const ColorSettings = () => {
             {tickerItems.length > 0 && (
               <ul className="space-y-2 mt-3">
                 {tickerItems.map((item, index) => (
-                  <li 
-                    key={index} 
-                    className={`flex items-center justify-between bg-gray-50 rounded-lg p-3 ${isRTL ? 'flex-row-reverse' : ''}`}
-                  >
-                    <span 
-                      className={`text-sm break-words overflow-wrap-anywhere ${isRTL ? 'text-right' : ''}`}
-                      style={{ maxWidth: 'calc(100% - 40px)' }}
-                    >
-                      {item}
-                    </span>
+                  <li key={index} className={`flex items-center justify-between bg-gray-50 rounded-lg p-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <span className={`text-sm ${isRTL ? 'text-right' : ''}`}>{item}</span>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -312,20 +300,20 @@ const ColorSettings = () => {
                 {isRTL ? 'معاينة شريط الأخبار' : 'Ticker Preview'}
               </h3>
               <div
-                className="bg-gray-200 rounded-lg p-3"
+                className="bg-gray-200 rounded-lg p-3 overflow-hidden"
                 style={{
                   backgroundColor: colors.background,
                   color: colors.foreground,
                   direction: isRTL ? 'rtl' : 'ltr'
                 }}
               >
-                <ul className="space-y-2">
+                <div className="flex animate-marquee">
                   {tickerItems.map((item, index) => (
-                    <li key={index} className="text-sm break-words overflow-wrap-anywhere">
+                    <span key={index} className="mx-4 text-sm whitespace-nowrap">
                       {item}
-                    </li>
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           )}

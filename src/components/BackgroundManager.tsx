@@ -3,10 +3,10 @@ import { Upload, Image, Video, Eye, Trash2 } from 'lucide-react';
 
 const BackgroundManager = () => {
   const [selectedFiles, setSelectedFiles] = useState({
-    dashboard: null,
-    flights: null,
-    hotels: null,
-    limousines: null
+    dashboard: { file: null, preview: null, type: null },
+    flights: { file: null, preview: null, type: null },
+    hotels: { file: null, preview: null, type: null },
+    limousines: { file: null, preview: null, type: null }
   });
 
   const [content, setContent] = useState({
@@ -23,8 +23,7 @@ const BackgroundManager = () => {
       titleAr: 'صفحة لوحة التحكم',
       description: 'Background for the Home page',
       descriptionAr: 'خلفية الصفحة الرئيسية للوحة التحكم',
-      currentPreview: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
-      gradient: 'travel-gradient'
+      defaultPreview: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800'
     },
     {
       id: 'flights',
@@ -32,8 +31,7 @@ const BackgroundManager = () => {
       titleAr: 'صفحة الرحلات',
       description: 'Background for flight management',
       descriptionAr: 'خلفية إدارة الرحلات',
-      currentPreview: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800',
-      gradient: 'flight-gradient'
+      defaultPreview: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800'
     },
     {
       id: 'hotels',
@@ -41,8 +39,7 @@ const BackgroundManager = () => {
       titleAr: 'صفحة الفنادق',
       description: 'Background for hotel management',
       descriptionAr: 'خلفية إدارة الفنادق',
-      currentPreview: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
-      gradient: 'hotel-gradient'
+      defaultPreview: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'
     },
     {
       id: 'limousines',
@@ -50,16 +47,19 @@ const BackgroundManager = () => {
       titleAr: 'صفحة الليموزين',
       description: 'Background for limousine management',
       descriptionAr: 'خلفية إدارة الليموزين',
-      currentPreview: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800',
-      gradient: 'limo-gradient'
+      defaultPreview: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800'
     }
   ];
 
   const handleFileSelect = (sectionId, file) => {
-    setSelectedFiles(prev => ({
-      ...prev,
-      [sectionId]: file
-    }));
+    if (file) {
+      const fileType = file.type.startsWith('video/') ? 'video' : 'image';
+      const previewUrl = URL.createObjectURL(file);
+      setSelectedFiles(prev => ({
+        ...prev,
+        [sectionId]: { file, preview: previewUrl, type: fileType }
+      }));
+    }
   };
 
   const handleContentChange = (sectionId, field, value) => {
@@ -73,18 +73,28 @@ const BackgroundManager = () => {
   };
 
   const handleUpload = (sectionId) => {
-    const file = selectedFiles[sectionId];
-    if (file) {
-      console.log(`Uploading ${file.name} for ${sectionId} section`);
+    const fileObj = selectedFiles[sectionId];
+    if (fileObj?.file) {
+      console.log(`Uploading ${fileObj.file.name} (${fileObj.type}) for ${sectionId} section`);
+      // Clean up the object URL to prevent memory leaks
+      URL.revokeObjectURL(fileObj.preview);
       setSelectedFiles(prev => ({
         ...prev,
-        [sectionId]: null
+        [sectionId]: { file: null, preview: null, type: null }
       }));
     }
   };
 
   const handleRemoveBackground = (sectionId) => {
     console.log(`Removing background for ${sectionId} section`);
+    const fileObj = selectedFiles[sectionId];
+    if (fileObj?.preview) {
+      URL.revokeObjectURL(fileObj.preview); // Clean up object URL
+    }
+    setSelectedFiles(prev => ({
+      ...prev,
+      [sectionId]: { file: null, preview: null, type: null }
+    }));
     setContent(prev => ({
       ...prev,
       [sectionId]: { title: '', text: '', buttonText: '' }
@@ -96,7 +106,7 @@ const BackgroundManager = () => {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Background Manager</h1>
-        <p className="text-gray-600">Manage background images, videos, titles, text, and buttons for each page section</p>
+        <p className="text-gray-600">Manage background images or videos, titles, text, and buttons for each page section</p>
       </div>
 
       {/* Background Sections */}
@@ -104,7 +114,7 @@ const BackgroundManager = () => {
         {backgroundSections.map((section) => (
           <div key={section.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {/* Section Header */}
-            <div className={`${section.gradient} p-4 text-white`}>
+            <div className={`${section.gradient || 'bg-gray-500'} p-4 text-white`}>
               <h3 className="text-lg font-semibold">{section.title}</h3>
               <p className="text-white/80 text-sm">{section.description}</p>
             </div>
@@ -114,11 +124,27 @@ const BackgroundManager = () => {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Current Background</label>
                 <div className="relative">
-                  <img
-                    src={section.currentPreview}
-                    alt={`${section.title} background`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
+                  {selectedFiles[section.id].preview ? (
+                    selectedFiles[section.id].type === 'video' ? (
+                      <video
+                        src={selectedFiles[section.id].preview}
+                        controls
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <img
+                        src={selectedFiles[section.id].preview}
+                        alt={`${section.title} background`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    )
+                  ) : (
+                    <img
+                      src={section.defaultPreview}
+                      alt={`${section.title} background`}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity p-4">
                     <h4 className="text-white font-semibold mb-1">{content[section.id].title || 'Sample Title'}</h4>
                     <p className="text-white text-sm mb-2">{content[section.id].text || 'Sample text goes here'}</p>
@@ -190,18 +216,18 @@ const BackgroundManager = () => {
                 </div>
 
                 {/* Selected File */}
-                {selectedFiles[section.id] && (
+                {selectedFiles[section.id].file && (
                   <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      {selectedFiles[section.id]?.type.startsWith('video/') ? (
+                      {selectedFiles[section.id].type === 'video' ? (
                         <Video className="w-4 h-4 text-purple-500" />
                       ) : (
                         <Image className="w-4 h-4 text-blue-500" />
                       )}
-                      <span className="text-sm text-gray-700">{selectedFiles[section.id]?.name}</span>
+                      <span className="text-sm text-gray-700">{selectedFiles[section.id].file.name}</span>
                     </div>
                     <button
-                      onClick={() => setSelectedFiles(prev => ({ ...prev, [section.id]: null }))}
+                      onClick={() => handleRemoveBackground(section.id)}
                       className="text-red-500 hover:text-red-700"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -213,9 +239,9 @@ const BackgroundManager = () => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleUpload(section.id)}
-                    disabled={!selectedFiles[section.id]}
+                    disabled={!selectedFiles[section.id].file}
                     className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
-                      selectedFiles[section.id]
+                      selectedFiles[section.id].file
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
@@ -232,17 +258,6 @@ const BackgroundManager = () => {
                   </button>
                 </div>
               </div>
-
-              {/* Upload Progress (Mock) */}
-              <div className="mt-3 hidden">
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
-                  <span>Uploading...</span>
-                  <span>75%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: '75%' }}></div>
-                </div>
-              </div>
             </div>
           </div>
         ))}
@@ -253,9 +268,9 @@ const BackgroundManager = () => {
         <h4 className="text-sm font-medium text-blue-900 mb-2">Tips for Best Results:</h4>
         <ul className="text-sm text-blue-800 space-y-1">
           <li>• Use high-resolution images (1920x1080 or higher) for best quality</li>
+          <li>• Use short videos (under 30 seconds, MP4 format) for optimal performance</li>
           <li>• Keep file sizes under 10MB for faster loading</li>
           <li>• Use concise titles, text, and button text for better readability</li>
-          <li>• Videos should be under 30 seconds for optimal performance</li>
         </ul>
       </div>
     </div>
