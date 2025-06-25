@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,13 +35,13 @@ const BookingTable: React.FC<BookingTableProps> = ({
           {booking.type === 'hotel' && <Hotel className="w-4 h-4 text-green-500" />}
           {booking.type === 'limousine' && <Car className="w-4 h-4 text-purple-500" />}
           <span className="text-foreground">
-            {booking.type === 'flight' && (isRTL ? 'طيران' : 'Flight')}
-            {booking.type === 'hotel' && (isRTL ? 'فندق' : 'Hotel')}
-            {booking.type === 'limousine' && (isRTL ? 'ليموزين' : 'Limousine')}
+            {booking.type === 'flight' && 'طيران'}
+            {booking.type === 'hotel' && 'فندق'}
+            {booking.type === 'limousine' && 'ليموزين'}
           </span>
           {booking.linkedBooking && (
             <Badge variant="secondary" className="text-xs">
-              {isRTL ? 'مع فندق' : 'with Hotel'}
+              مع فندق
             </Badge>
           )}
         </div>
@@ -53,12 +52,12 @@ const BookingTable: React.FC<BookingTableProps> = ({
           <div className="font-medium">${booking.amount}</div>
           {booking.flightCosts && (
             <div className="text-xs text-muted-foreground">
-              {isRTL ? 'تكاليف الطيران' : 'Flight costs'}: ${booking.flightCosts}
+              تكاليف الطيران: ${booking.flightCosts}
             </div>
           )}
           {booking.linkedBooking && (
             <div className="text-xs text-muted-foreground">
-              + ${booking.linkedBooking.amount} ({isRTL ? 'فندق' : 'hotel'})
+              + ${booking.linkedBooking.amount} (فندق)
             </div>
           )}
         </div>
@@ -71,9 +70,9 @@ const BookingTable: React.FC<BookingTableProps> = ({
             'destructive'
           }
         >
-          {booking.status === 'confirmed' && (isRTL ? 'مؤكد' : 'Confirmed')}
-          {booking.status === 'pending' && (isRTL ? 'معلق' : 'Pending')}
-          {booking.status === 'cancelled' && (isRTL ? 'ملغي' : 'Cancelled')}
+          {booking.status === 'confirmed' && 'مؤكد'}
+          {booking.status === 'pending' && 'معلق'}
+          {booking.status === 'cancelled' && 'ملغي'}
         </Badge>
       </td>
       <td className="p-3">
@@ -119,7 +118,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
       <CardHeader>
         <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <Eye className="w-5 h-5" />
-          {isRTL ? 'جميع الحجوزات' : 'All Bookings'}
+          جميع الحجوزات
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -128,25 +127,25 @@ const BookingTable: React.FC<BookingTableProps> = ({
             <thead>
               <tr className="border-b border-border">
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'رقم الحجز' : 'Booking ID'}
+                  رقم الحجز
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'العميل' : 'Customer'}
+                  العميل
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'النوع' : 'Type'}
+                  النوع
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'التاريخ' : 'Date'}
+                  التاريخ
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'المبلغ' : 'Amount'}
+                  المبلغ
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'الحالة' : 'Status'}
+                  الحالة
                 </th>
                 <th className={`p-3 text-left font-medium text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
-                  {isRTL ? 'الإجراءات' : 'Actions'}
+                  الإجراءات
                 </th>
               </tr>
             </thead>

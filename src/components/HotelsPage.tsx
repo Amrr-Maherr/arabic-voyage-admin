@@ -1,43 +1,43 @@
-
 import React, { useState } from 'react';
 import { Plus, Star, Edit, Trash2, MapPin, Wifi, Coffee, Waves } from 'lucide-react';
 
 const HotelsPage = () => {
+  const isRTL = document.dir === 'rtl';
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingHotel, setEditingHotel] = useState(null);
   const [hotels, setHotels] = useState([
     {
       id: 1,
-      name: 'Nile Palace',
-      city: 'Cairo',
+      name: 'قصر النيل',
+      city: 'القاهرة',
       stars: 4,
       rooms: 80,
       price: 120,
-      status: 'Active',
+      status: 'نشط',
       image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300',
-      services: ['Wi-Fi', 'Breakfast', 'Pool']
+      services: ['واي فاي', 'إفطار', 'مسبح']
     },
     {
       id: 2,
-      name: 'Red Dunes Resort',
-      city: 'Dubai',
+      name: 'منتجع الكثبان الحمراء',
+      city: 'دبي',
       stars: 5,
       rooms: 150,
       price: 250,
-      status: 'Inactive',
+      status: 'غير نشط',
       image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=300',
-      services: ['Wi-Fi', 'Breakfast', 'Pool']
+      services: ['واي فاي', 'إفطار', 'مسبح']
     },
     {
       id: 3,
-      name: 'Seaside Paradise',
-      city: 'Alexandria',
+      name: 'جنة الساحل',
+      city: 'الإسكندرية',
       stars: 4,
       rooms: 120,
       price: 180,
-      status: 'Active',
+      status: 'نشط',
       image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300',
-      services: ['Wi-Fi', 'Pool']
+      services: ['واي فاي', 'مسبح']
     }
   ]);
 
@@ -52,12 +52,12 @@ const HotelsPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
+    // معالجة منطق إرسال النموذج هنا
     setShowAddForm(false);
     setEditingHotel(null);
   };
 
-  const renderStars = (count: number) => {
+  const renderStars = (count) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
@@ -66,13 +66,13 @@ const HotelsPage = () => {
     ));
   };
 
-  const getServiceIcon = (service: string) => {
+  const getServiceIcon = (service) => {
     switch (service) {
-      case 'Wi-Fi':
+      case 'واي فاي':
         return <Wifi className="w-4 h-4" />;
-      case 'Breakfast':
+      case 'إفطار':
         return <Coffee className="w-4 h-4" />;
-      case 'Pool':
+      case 'مسبح':
         return <Waves className="w-4 h-4" />;
       default:
         return null;
@@ -81,11 +81,11 @@ const HotelsPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
+      {/* رأس الصفحة */}
+      <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hotels Management</h1>
-          <p className="text-gray-600">Manage your hotel inventory and bookings</p>
+          <h1 className="text-2xl font-bold text-gray-900">إدارة الفنادق</h1>
+          <p className="text-gray-600">إدارة مخزون الفنادق والحجوزات الخاصة بك</p>
         </div>
         <button
           onClick={() => {
@@ -95,69 +95,69 @@ const HotelsPage = () => {
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus className="w-5 h-5" />
-          <span>Add Hotel</span>
+          <span>إضافة فندق</span>
         </button>
       </div>
 
-      {/* Add/Edit Hotel Form */}
+      {/* نموذج إضافة/تعديل فندق */}
       {showAddForm && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingHotel ? 'Edit Hotel' : 'Add New Hotel'}
+            {editingHotel ? 'تعديل فندق' : 'إضافة فندق جديد'}
           </h3>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hotel Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">اسم الفندق</label>
               <input
                 type="text"
-                placeholder="Enter hotel name"
+                placeholder="أدخل اسم الفندق"
                 defaultValue={editingHotel?.name || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">المدينة</label>
               <input
                 type="text"
-                placeholder="Enter city"
+                placeholder="أدخل المدينة"
                 defaultValue={editingHotel?.city || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Star Rating</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">تصنيف النجوم</label>
               <select 
                 defaultValue={editingHotel?.stars || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               >
-                <option value="">Select rating</option>
-                <option value="1">1 Star</option>
-                <option value="2">2 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="5">5 Stars</option>
+                <option value="">اختر التصنيف</option>
+                <option value="1">نجمة واحدة</option>
+                <option value="2">نجمتان</option>
+                <option value="3">ثلاث نجوم</option>
+                <option value="4">أربع نجوم</option>
+                <option value="5">خمس نجوم</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Number of Rooms</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">عدد الغرف</label>
               <input
                 type="number"
-                placeholder="Enter room count"
+                placeholder="أدخل عدد الغرف"
                 defaultValue={editingHotel?.rooms || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price per Night ($)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">السعر لليلة ($)</label>
               <input
                 type="number"
-                placeholder="Enter price"
+                placeholder="أدخل السعر"
                 defaultValue={editingHotel?.price || ''}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Images</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">رفع الصور</label>
               <input
                 type="file"
                 multiple
@@ -166,34 +166,34 @@ const HotelsPage = () => {
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">الوصف</label>
               <textarea
                 rows={3}
-                placeholder="Enter hotel description"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="أدخل وصف الفندق"
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${isRTL ? 'text-right' : ''}`}
               ></textarea>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Services</label>
-              <div className="flex flex-wrap gap-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">الخدمات</label>
+              <div className={`flex flex-wrap gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <label className="flex items-center">
                   <input type="checkbox" className="mr-2 rounded" />
                   <Wifi className="w-4 h-4 mr-1" />
-                  Wi-Fi
+                  واي فاي
                 </label>
                 <label className="flex items-center">
                   <input type="checkbox" className="mr-2 rounded" />
                   <Coffee className="w-4 h-4 mr-1" />
-                  Breakfast
+                  إفطار
                 </label>
                 <label className="flex items-center">
                   <input type="checkbox" className="mr-2 rounded" />
                   <Waves className="w-4 h-4 mr-1" />
-                  Pool
+                  مسبح
                 </label>
               </div>
             </div>
-            <div className="md:col-span-2 flex justify-end space-x-3">
+            <div className={`md:col-span-2 flex justify-end space-x-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <button
                 type="button"
                 onClick={() => {
@@ -202,48 +202,48 @@ const HotelsPage = () => {
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                إلغاء
               </button>
               <button
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                {editingHotel ? 'Update Hotel' : 'Add Hotel'}
+                {editingHotel ? 'تحديث الفندق' : 'إضافة فندق'}
               </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* Hotels Table */}
+      {/* جدول الفنادق */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hotel
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الفندق
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Location
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الموقع
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Rating
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  التصنيف
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Rooms
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الغرف
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price/Night
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  السعر/الليلة
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Services
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الخدمات
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الحالة
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                  الإجراءات
                 </th>
               </tr>
             </thead>
@@ -251,7 +251,7 @@ const HotelsPage = () => {
               {hotels.map((hotel) => (
                 <tr key={hotel.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <div className="flex items-center">
+                    <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <img
                         src={hotel.image}
                         alt={hotel.name}
@@ -263,18 +263,18 @@ const HotelsPage = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center">
+                    <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <MapPin className="w-4 h-4 text-gray-400 mr-1" />
                       <span className="text-gray-900">{hotel.city}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex">{renderStars(hotel.stars)}</div>
+                    <div className={`flex ${isRTL ? 'flex-row-reverse' : ''}`}>{renderStars(hotel.stars)}</div>
                   </td>
-                  <td className="px-6 py-4 text-gray-900">{hotel.rooms}</td>
-                  <td className="px-6 py-4 text-gray-900 font-medium">${hotel.price}</td>
+                  <td className={`px-6 py-4 text-gray-900 ${isRTL ? 'text-right' : ''}`}>{hotel.rooms}</td>
+                  <td className={`px-6 py-4 text-gray-900 font-medium ${isRTL ? 'text-right' : ''}`}>${hotel.price}</td>
                   <td className="px-6 py-4">
-                    <div className="flex space-x-2">
+                    <div className={`flex space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       {hotel.services.map((service, idx) => (
                         <div key={idx} className="flex items-center text-sm text-gray-600">
                           {getServiceIcon(service)}
@@ -284,7 +284,7 @@ const HotelsPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                      hotel.status === 'Active'
+                      hotel.status === 'نشط'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}>
@@ -292,7 +292,7 @@ const HotelsPage = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex space-x-2">
+                    <div className={`flex space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <button 
                         onClick={() => handleEdit(hotel)}
                         className="text-blue-600 hover:text-blue-800"

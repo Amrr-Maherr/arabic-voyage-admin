@@ -14,11 +14,11 @@ const ColorSettings = () => {
     background: '#ffffff',
     foreground: '#0f172a'
   });
-  const [tickerItems, setTickerItems] = useState<string[]>([]);
+  const [tickerItems, setTickerItems] = useState([]);
   const [newTickerText, setNewTickerText] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
 
-  // Load saved colors and ticker items from localStorage on component mount
+  // تحميل الألوان وعناصر شريط الأخبار المحفوظة من localStorage عند تحميل المكون
   useEffect(() => {
     const savedColors = localStorage.getItem('siteColors');
     if (savedColors) {
@@ -30,7 +30,7 @@ const ColorSettings = () => {
     }
   }, []);
 
-  const handleColorChange = (colorKey: string, value: string) => {
+  const handleColorChange = (colorKey, value) => {
     setColors(prev => ({ ...prev, [colorKey]: value }));
   };
 
@@ -43,7 +43,7 @@ const ColorSettings = () => {
     }
   };
 
-  const handleDeleteTickerItem = (index: number) => {
+  const handleDeleteTickerItem = (index) => {
     const updatedItems = tickerItems.filter((_, i) => i !== index);
     setTickerItems(updatedItems);
     localStorage.setItem('tickerItems', JSON.stringify(updatedItems));
@@ -57,8 +57,8 @@ const ColorSettings = () => {
   const applyColors = () => {
     const root = document.documentElement;
     
-    // Convert hex to HSL for CSS variables
-    const hexToHsl = (hex: string) => {
+    // تحويل HEX إلى HSL لمتغيرات CSS
+    const hexToHsl = (hex) => {
       const r = parseInt(hex.slice(1, 3), 16) / 255;
       const g = parseInt(hex.slice(3, 5), 16) / 255;
       const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -81,17 +81,17 @@ const ColorSettings = () => {
       return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
     };
 
-    // Apply colors to CSS variables
+    // تطبيق الألوان على متغيرات CSS
     root.style.setProperty('--primary', hexToHsl(colors.primary));
     root.style.setProperty('--secondary', hexToHsl(colors.secondary));
     root.style.setProperty('--accent', hexToHsl(colors.accent));
     root.style.setProperty('--background', hexToHsl(colors.background));
     root.style.setProperty('--foreground', hexToHsl(colors.foreground));
 
-    // Save to localStorage
+    // حفظ في localStorage
     localStorage.setItem('siteColors', JSON.stringify(colors));
     
-    console.log('Colors applied successfully');
+    console.log('تم تطبيق الألوان بنجاح');
   };
 
   const resetColors = () => {
@@ -106,7 +106,7 @@ const ColorSettings = () => {
     setColors(defaultColors);
     localStorage.removeItem('siteColors');
     
-    // Reset CSS variables to defaults
+    // إعادة تعيين متغيرات CSS إلى القيم الافتراضية
     const root = document.documentElement;
     root.style.removeProperty('--primary');
     root.style.removeProperty('--secondary');
@@ -125,28 +125,28 @@ const ColorSettings = () => {
   const colorOptions = [
     {
       key: 'primary',
-      label: isRTL ? 'اللون الأساسي' : 'Primary Color',
-      description: isRTL ? 'اللون الرئيسي للموقع' : 'Main site color'
+      label: 'اللون الأساسي',
+      description: 'اللون الرئيسي للموقع'
     },
     {
       key: 'secondary',
-      label: isRTL ? 'اللون الثانوي' : 'Secondary Color',
-      description: isRTL ? 'اللون الثانوي للخلفيات' : 'Secondary background color'
+      label: 'اللون الثانوي',
+      description: 'اللون الثانوي للخلفيات'
     },
     {
       key: 'accent',
-      label: isRTL ? 'لون التركيز' : 'Accent Color',
-      description: isRTL ? 'لون التركيز والروابط' : 'Accent and link color'
+      label: 'لون التركيز',
+      description: 'لون التركيز والروابط'
     },
     {
       key: 'background',
-      label: isRTL ? 'لون الخلفية' : 'Background Color',
-      description: isRTL ? 'لون خلفية الصفحة' : 'Page background color'
+      label: 'لون الخلفية',
+      description: 'لون خلفية الصفحة'
     },
     {
       key: 'foreground',
-      label: isRTL ? 'لون النص' : 'Text Color',
-      description: isRTL ? 'لون النص الأساسي' : 'Main text color'
+      label: 'لون النص',
+      description: 'لون النص الأساسي'
     }
   ];
 
@@ -155,17 +155,17 @@ const ColorSettings = () => {
       <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {isRTL ? 'إعدادات الألوان وشريط الأخبار' : 'Color & Ticker Settings'}
+            إعدادات الألوان وشريط الأخبار
           </h1>
         </div>
       </div>
 
-      {/* Color Settings Card */}
+      {/* بطاقة إعدادات الألوان */}
       <Card>
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Palette className="w-5 h-5" />
-            {isRTL ? 'ألوان الموقع' : 'Website Colors'}
+            ألوان الموقع
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -180,18 +180,18 @@ const ColorSettings = () => {
                 <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div 
                     className="w-12 h-12 rounded-lg border-2 border-gray-200 shadow-sm"
-                    style={{ backgroundColor: colors[option.key as keyof typeof colors] }}
+                    style={{ backgroundColor: colors[option.key] }}
                   />
                   <Input
                     id={option.key}
                     type="color"
-                    value={colors[option.key as keyof typeof colors]}
+                    value={colors[option.key]}
                     onChange={(e) => handleColorChange(option.key, e.target.value)}
                     className="w-20 h-12 p-1 cursor-pointer"
                   />
                   <Input
                     type="text"
-                    value={colors[option.key as keyof typeof colors]}
+                    value={colors[option.key]}
                     onChange={(e) => handleColorChange(option.key, e.target.value)}
                     className={`flex-1 ${isRTL ? 'text-right' : ''}`}
                     placeholder="#000000"
@@ -201,20 +201,20 @@ const ColorSettings = () => {
             ))}
           </div>
 
-          {/* Color Preview Section */}
+          {/* قسم معاينة الألوان */}
           <div className="border-t pt-6">
             <h3 className="text-lg font-semibold mb-4">
-              {isRTL ? 'معاينة الألوان' : 'Color Preview'}
+              معاينة الألوان
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {colorOptions.map((option) => (
                 <div key={`preview-${option.key}`} className="text-center">
                   <div 
                     className="w-full h-16 rounded-lg border border-gray-200 mb-2"
-                    style={{ backgroundColor: colors[option.key as keyof typeof colors] }}
+                    style={{ backgroundColor: colors[option.key] }}
                   />
                   <p className="text-sm font-medium">{option.label}</p>
-                  <p className="text-xs text-gray-500">{colors[option.key as keyof typeof colors]}</p>
+                  <p className="text-xs text-gray-500">{colors[option.key]}</p>
                 </div>
               ))}
             </div>
@@ -223,32 +223,32 @@ const ColorSettings = () => {
           <div className={`flex gap-4 pt-4 border-t ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Button onClick={applyColors} className="travel-gradient text-white">
               <Save className="w-4 h-4 mr-2" />
-              {isRTL ? 'حفظ وتطبيق' : 'Save & Apply'}
+              حفظ وتطبيق
             </Button>
             <Button onClick={resetColors} variant="outline">
               <RotateCcw className="w-4 h-4 mr-2" />
-              {isRTL ? 'إعادة تعيين' : 'Reset'}
+              إعادة تعيين
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Ticker Settings Card */}
+      {/* بطاقة إعدادات شريط الأخبار */}
       <Card>
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Eye className="w-5 h-5" />
-            {isRTL ? 'إعدادات شريط الأخبار' : 'News Ticker Settings'}
+            إعدادات شريط الأخبار
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Add New Ticker Item */}
+          {/* إضافة نص جديد لشريط الأخبار */}
           <div className="space-y-2">
             <Label htmlFor="ticker-input" className="text-sm font-medium">
-              {isRTL ? 'إضافة نص جديد لشريط الأخبار' : 'Add New Ticker Text'}
+              إضافة نص جديد لشريط الأخبار
             </Label>
             <p className="text-xs text-gray-500 mb-2">
-              {isRTL ? 'أدخل النص الذي سيظهر في شريط الأخبار' : 'Enter text to display in the news ticker'}
+              أدخل النص الذي سيظهر في شريط الأخبار
             </p>
             <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <Input
@@ -256,12 +256,12 @@ const ColorSettings = () => {
                 type="text"
                 value={newTickerText}
                 onChange={(e) => setNewTickerText(e.target.value)}
-                placeholder={isRTL ? 'أدخل نص الخبر...' : 'Enter ticker text...'}
+                placeholder="أدخل نص الخبر..."
                 className={`flex-1 ${isRTL ? 'text-right' : ''}`}
               />
               <Button onClick={handleAddTickerItem} className="travel-gradient text-white">
                 <Plus className="w-4 h-4 mr-2" />
-                {isRTL ? 'إضافة' : 'Add'}
+                إضافة
               </Button>
               <Button 
                 onClick={handleClearTickerItems} 
@@ -270,10 +270,10 @@ const ColorSettings = () => {
                 disabled={tickerItems.length === 0}
               >
                 <Trash className="w-4 h-4 mr-2" />
-                {isRTL ? 'مسح الكل' : 'Clear All'}
+                مسح الكل
               </Button>
             </div>
-            {/* Ticker Items List */}
+            {/* قائمة عناصر شريط الأخبار */}
             {tickerItems.length > 0 && (
               <ul className="space-y-2 mt-3">
                 {tickerItems.map((item, index) => (
@@ -293,11 +293,11 @@ const ColorSettings = () => {
             )}
           </div>
 
-          {/* Ticker Preview */}
+          {/* معاينة شريط الأخبار */}
           {tickerItems.length > 0 && (
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold mb-4">
-                {isRTL ? 'معاينة شريط الأخبار' : 'Ticker Preview'}
+                معاينة شريط الأخبار
               </h3>
               <div
                 className="bg-gray-200 rounded-lg p-3 overflow-hidden"
@@ -320,23 +320,23 @@ const ColorSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Tips Section */}
+      {/* قسم النصائح */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="text-sm font-medium text-blue-900 mb-2">
-          {isRTL ? 'نصائح لإعدادات الألوان وشريط الأخبار:' : 'Color & Ticker Tips:'}
+          نصائح لإعدادات الألوان وشريط الأخبار:
         </h4>
         <ul className="text-sm text-blue-800 space-y-1">
           <li>
-            {isRTL ? '• تأكد من وجود تباين كافي بين ألوان النص والخلفية' : '• Ensure sufficient contrast between text and background colors'}
+            • تأكد من وجود تباين كافي بين ألوان النص والخلفية
           </li>
           <li>
-            {isRTL ? '• استخدم الألوان الفاتحة للخلفيات والألوان الداكنة للنصوص' : '• Use light colors for backgrounds and dark colors for text'}
+            • استخدم الألوان الفاتحة للخلفيات والألوان الداكنة للنصوص
           </li>
           <li>
-            {isRTL ? '• اجعل نصوص شريط الأخبار موجزة وواضحة' : '• Keep ticker texts concise and clear'}
+            • اجعل نصوص شريط الأخبار موجزة وواضحة
           </li>
           <li>
-            {isRTL ? '• اختبر الألوان والنصوص على أجهزة مختلفة قبل التطبيق النهائي' : '• Test colors and ticker texts on different devices before final application'}
+            • اختبر الألوان والنصوص على أجهزة مختلفة قبل التطبيق النهائي
           </li>
         </ul>
       </div>

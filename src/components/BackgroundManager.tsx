@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Upload, Image, Video, Eye, Trash2 } from 'lucide-react';
 
 const BackgroundManager = () => {
+  const isRTL = document.dir === 'rtl';
   const [selectedFiles, setSelectedFiles] = useState({
     dashboard: { file: null, preview: null, type: null },
     flights: { file: null, preview: null, type: null },
@@ -19,34 +20,26 @@ const BackgroundManager = () => {
   const backgroundSections = [
     {
       id: 'dashboard',
-      title: 'Home Page',
-      titleAr: 'صفحة لوحة التحكم',
-      description: 'Background for the Home page',
-      descriptionAr: 'خلفية الصفحة الرئيسية للوحة التحكم',
+      title: 'صفحة لوحة التحكم',
+      description: 'خلفية الصفحة الرئيسية للوحة التحكم',
       defaultPreview: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800'
     },
     {
       id: 'flights',
-      title: 'Flights Page',
-      titleAr: 'صفحة الرحلات',
-      description: 'Background for flight management',
-      descriptionAr: 'خلفية إدارة الرحلات',
+      title: 'صفحة الرحلات',
+      description: 'خلفية إدارة الرحلات',
       defaultPreview: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800'
     },
     {
       id: 'hotels',
-      title: 'Hotels Page',
-      titleAr: 'صفحة الفنادق',
-      description: 'Background for hotel management',
-      descriptionAr: 'خلفية إدارة الفنادق',
+      title: 'صفحة الفنادق',
+      description: 'خلفية إدارة الفنادق',
       defaultPreview: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'
     },
     {
       id: 'limousines',
-      title: 'Limousines Page',
-      titleAr: 'صفحة الليموزين',
-      description: 'Background for limousine management',
-      descriptionAr: 'خلفية إدارة الليموزين',
+      title: 'صفحة الليموزين',
+      description: 'خلفية إدارة الليموزين',
       defaultPreview: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800'
     }
   ];
@@ -75,8 +68,8 @@ const BackgroundManager = () => {
   const handleUpload = (sectionId) => {
     const fileObj = selectedFiles[sectionId];
     if (fileObj?.file) {
-      console.log(`Uploading ${fileObj.file.name} (${fileObj.type}) for ${sectionId} section`);
-      // Clean up the object URL to prevent memory leaks
+      console.log(`رفع ${fileObj.file.name} (${fileObj.type}) لقسم ${backgroundSections.find(section => section.id === sectionId).title}`);
+      // تنظيف عنوان URL لتجنب تسرب الذاكرة
       URL.revokeObjectURL(fileObj.preview);
       setSelectedFiles(prev => ({
         ...prev,
@@ -86,10 +79,10 @@ const BackgroundManager = () => {
   };
 
   const handleRemoveBackground = (sectionId) => {
-    console.log(`Removing background for ${sectionId} section`);
+    console.log(`إزالة الخلفية لقسم ${backgroundSections.find(section => section.id === sectionId).title}`);
     const fileObj = selectedFiles[sectionId];
     if (fileObj?.preview) {
-      URL.revokeObjectURL(fileObj.preview); // Clean up object URL
+      URL.revokeObjectURL(fileObj.preview); // تنظيف عنوان URL
     }
     setSelectedFiles(prev => ({
       ...prev,
@@ -103,26 +96,26 @@ const BackgroundManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* رأس الصفحة */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Background Manager</h1>
-        <p className="text-gray-600">Manage background images or videos, titles, text, and buttons for each page section</p>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">إدارة الخلفيات</h1>
+        <p className="text-gray-600">إدارة صور أو مقاطع فيديو الخلفية، العناوين، النصوص، والأزرار لكل قسم في الصفحة</p>
       </div>
 
-      {/* Background Sections */}
+      {/* أقسام الخلفيات */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {backgroundSections.map((section) => (
           <div key={section.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            {/* Section Header */}
+            {/* رأس القسم */}
             <div className={`${section.gradient || 'bg-gray-500'} p-4 text-white`}>
               <h3 className="text-lg font-semibold">{section.title}</h3>
               <p className="text-white/80 text-sm">{section.description}</p>
             </div>
 
-            {/* Current Preview */}
+            {/* المعاينة الحالية */}
             <div className="p-4">
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current Background</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">الخلفية الحالية</label>
                 <div className="relative">
                   {selectedFiles[section.id].preview ? (
                     selectedFiles[section.id].type === 'video' ? (
@@ -134,67 +127,67 @@ const BackgroundManager = () => {
                     ) : (
                       <img
                         src={selectedFiles[section.id].preview}
-                        alt={`${section.title} background`}
+                        alt={`خلفية ${section.title}`}
                         className="w-full h-32 object-cover rounded-lg"
                       />
                     )
                   ) : (
                     <img
                       src={section.defaultPreview}
-                      alt={`${section.title} background`}
+                      alt={`خلفية ${section.title}`}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                   )}
                   <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity p-4">
-                    <h4 className="text-white font-semibold mb-1">{content[section.id].title || 'Sample Title'}</h4>
-                    <p className="text-white text-sm mb-2">{content[section.id].text || 'Sample text goes here'}</p>
+                    <h4 className="text-white font-semibold mb-1">{content[section.id].title || 'عنوان نموذجي'}</h4>
+                    <p className="text-white text-sm mb-2">{content[section.id].text || 'نص نموذجي هنا'}</p>
                     <button className="bg-white text-gray-800 px-3 py-1 rounded-lg text-sm flex items-center space-x-2">
                       <Eye className="w-4 h-4" />
-                      <span>{content[section.id].buttonText || 'Explore Now'}</span>
+                      <span>{content[section.id].buttonText || 'استكشف الآن'}</span>
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Content Inputs */}
+              {/* مدخلات المحتوى */}
               <div className="space-y-3 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">العنوان</label>
                   <input
                     type="text"
                     value={content[section.id].title}
                     onChange={(e) => handleContentChange(section.id, 'title', e.target.value)}
-                    placeholder="Enter title"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="أدخل العنوان"
+                    className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${isRTL ? 'text-right' : ''}`}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">النص</label>
                   <textarea
                     value={content[section.id].text}
                     onChange={(e) => handleContentChange(section.id, 'text', e.target.value)}
-                    placeholder="Enter description text"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="أدخل نص الوصف"
+                    className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${isRTL ? 'text-right' : ''}`}
                     rows={3}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">نص الزر</label>
                   <input
                     type="text"
                     value={content[section.id].buttonText}
                     onChange={(e) => handleContentChange(section.id, 'buttonText', e.target.value)}
-                    placeholder="Enter button text"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="أدخل نص الزر"
+                    className={`w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${isRTL ? 'text-right' : ''}`}
                   />
                 </div>
               </div>
 
-              {/* File Upload */}
+              {/* رفع الملف */}
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">Upload New Background</label>
+                <label className="block text-sm font-medium text-gray-700">رفع خلفية جديدة</label>
                 
-                {/* File Input */}
+                {/* حقل إدخال الملف */}
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors">
                   <input
                     type="file"
@@ -209,16 +202,16 @@ const BackgroundManager = () => {
                   <label htmlFor={`file-input-${section.id}`} className="cursor-pointer">
                     <div className="flex flex-col items-center">
                       <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PNG, JPG, MP4 up to 10MB</p>
+                      <p className="text-sm text-gray-600">انقر للرفع أو اسحب وأفلت</p>
+                      <p className="text-xs text-gray-500">PNG، JPG، MP4 بحد أقصى 10 ميجابايت</p>
                     </div>
                   </label>
                 </div>
 
-                {/* Selected File */}
+                {/* الملف المحدد */}
                 {selectedFiles[section.id].file && (
                   <div className="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                    <div className={`flex items-center space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       {selectedFiles[section.id].type === 'video' ? (
                         <Video className="w-4 h-4 text-purple-500" />
                       ) : (
@@ -235,8 +228,8 @@ const BackgroundManager = () => {
                   </div>
                 )}
 
-                {/* Action Buttons */}
-                <div className="flex space-x-2">
+                {/* أزرار الإجراءات */}
+                <div className={`flex space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <button
                     onClick={() => handleUpload(section.id)}
                     disabled={!selectedFiles[section.id].file}
@@ -247,14 +240,14 @@ const BackgroundManager = () => {
                     }`}
                   >
                     <Upload className="w-4 h-4 inline mr-2" />
-                    Upload
+                    رفع
                   </button>
                   <button
                     onClick={() => handleRemoveBackground(section.id)}
                     className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
                   >
                     <Trash2 className="w-4 h-4 inline mr-2" />
-                    Remove
+                    إزالة
                   </button>
                 </div>
               </div>
@@ -263,14 +256,14 @@ const BackgroundManager = () => {
         ))}
       </div>
 
-      {/* Tips */}
+      {/* النصائح */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-blue-900 mb-2">Tips for Best Results:</h4>
+        <h4 className="text-sm font-medium text-blue-900 mb-2">نصائح للحصول على أفضل النتائج:</h4>
         <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Use high-resolution images (1920x1080 or higher) for best quality</li>
-          <li>• Use short videos (under 30 seconds, MP4 format) for optimal performance</li>
-          <li>• Keep file sizes under 10MB for faster loading</li>
-          <li>• Use concise titles, text, and button text for better readability</li>
+          <li>• استخدم صورًا عالية الدقة (1920x1080 أو أعلى) للحصول على أفضل جودة</li>
+          <li>• استخدم مقاطع فيديو قصيرة (أقل من 30 ثانية، تنسيق MP4) لأداء مثالي</li>
+          <li>• حافظ على حجم الملفات أقل من 10 ميجابايت لتحميل أسرع</li>
+          <li>• استخدم عناوين ونصوص وأزرار موجزة لتحسين القراءة</li>
         </ul>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,59 +21,59 @@ const LoginPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    // Here would be the login logic
+    console.log('محاولة تسجيل الدخول:', formData);
+    // مكان تنفيذ منطق تسجيل الدخول
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
-      {/* Background Animation */}
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
+      {/* خلفيات متحركة */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo and Title */}
+        {/* شعار وعنوان */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
+            <h1 className="text-3xl font-bold text-white">قافله الايمان</h1>
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
               <Plane className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-3xl font-bold text-white">Qafalah Alayman</h1>
           </div>
         </div>
 
-        {/* Login Card */}
+        {/* كرت تسجيل الدخول */}
         <Card className="backdrop-blur-lg bg-white/95 shadow-2xl border-0">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl font-bold text-gray-800">Welcome Back</CardTitle>
-            <p className="text-gray-600 mt-2">Enter your credentials to access the dashboard</p>
+            <CardTitle className="text-2xl font-bold text-gray-800">أهلاً بعودتك</CardTitle>
+            <p className="text-gray-600 mt-2">أدخل بياناتك للوصول إلى لوحة التحكم</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Field */}
+              {/* البريد الإلكتروني */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  Email Address
+                  البريد الإلكتروني
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder="أدخل بريدك الإلكتروني"
                   className="h-12"
                   required
                 />
               </div>
 
-              {/* Password Field */}
+              {/* كلمة المرور */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="flex items-center gap-2">
                   <Lock className="w-4 h-4" />
-                  Password
+                  كلمة المرور
                 </Label>
                 <div className="relative">
                   <Input
@@ -82,37 +81,37 @@ const LoginPage = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={(e) => handleInputChange('password', e.target.value)}
-                    placeholder="Enter your password"
-                    className="h-12 pr-12"
+                    placeholder="أدخل كلمة المرور"
+                    className="h-12"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 right-3"
+                    className="absolute top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 left-3"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
 
-             {/* Login Button */}
+              {/* زر تسجيل الدخول */}
               <Button
                 type="submit"
                 className="w-full h-12 travel-gradient text-white font-medium text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
               >
-                <span className="flex items-center gap-2">
-                  Sign In
+                <span className="flex items-center justify-center gap-2">
+                  تسجيل الدخول
                   <ArrowRight className="w-5 h-5" />
                 </span>
               </Button>
 
-              {/* Register Link */}
+              {/* رابط التسجيل */}
               <div className="text-center pt-4 border-t border-gray-200">
                 <p className="text-gray-600">
-                  Don't have an account?{' '}
+                  ليس لديك حساب؟{' '}
                   <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium">
-                    Create one now
+                    أنشئ حساب الآن
                   </Link>
                 </p>
               </div>
@@ -120,25 +119,25 @@ const LoginPage = () => {
           </CardContent>
         </Card>
 
-        {/* Service Icons */}
+        {/* خدمات مصورة */}
         <div className="flex items-center justify-center gap-8 mt-8">
           <div className="text-center">
             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2 backdrop-blur-sm">
               <Plane className="w-6 h-6 text-white" />
             </div>
-            <p className="text-white/80 text-sm">Flights</p>
+            <p className="text-white/80 text-sm">رحلات الطيران</p>
           </div>
           <div className="text-center">
             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2 backdrop-blur-sm">
               <Hotel className="w-6 h-6 text-white" />
             </div>
-            <p className="text-white/80 text-sm">Hotels</p>
+            <p className="text-white/80 text-sm">الفنادق</p>
           </div>
           <div className="text-center">
             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-2 backdrop-blur-sm">
               <Car className="w-6 h-6 text-white" />
             </div>
-            <p className="text-white/80 text-sm">Limousine</p>
+            <p className="text-white/80 text-sm">الليموزين</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   LayoutDashboard, 
@@ -8,10 +7,10 @@ import {
   Image, 
   Calendar,
   Settings,
-  MapPin,
   Palette
 } from 'lucide-react';
-import LogoImage from "../../public/logo (1) 1.png"
+import LogoImage from "../../public/logo (1) 1.png";
+
 interface SidebarProps {
   currentPage: string;
   setCurrentPage: (page: string) => void;
@@ -20,31 +19,31 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL }) => {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'flights', label: 'Manage Flights', icon: Plane },
-    { id: 'hotels', label: 'Manage Hotels', icon: Building2 },
-    { id: 'limousines', label: 'Manage Limousines', icon: Car },
-    { id: 'bookings', label: 'All Bookings', icon: Calendar },
-    { id: 'background', label: 'Background Manager', icon: Image },
-    { id: 'color-settings', label: 'Color Settings', icon: Palette },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
+    { id: 'flights', label: 'إدارة الرحلات الجوية', icon: Plane },
+    { id: 'hotels', label: 'إدارة الفنادق', icon: Building2 },
+    { id: 'limousines', label: 'إدارة الليموزين', icon: Car },
+    { id: 'bookings', label: 'جميع الحجوزات', icon: Calendar },
+    { id: 'background', label: 'إدارة الخلفية', icon: Image },
+    { id: 'color-settings', label: 'إعدادات الألوان', icon: Palette },
+    { id: 'settings', label: 'الإعدادات', icon: Settings },
   ];
 
   return (
-    <div className="bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200">
-      {/* Logo */}
+    <div className={`bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200 ${isRTL ? 'border-l border-r-0' : ''}`}>
+      {/* الشعار */}
       <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10  rounded-lg flex items-center justify-center">
-            <img src={LogoImage} alt="" />
+        <div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse' : 'space-x-3'}`}>
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+            <img src={LogoImage} alt="شعار قافلة الإيمان" />
           </div>
           <div>
-            <h1 className="text-md font-bold text-gray-800">Qafalah Alayman</h1>
+            <h1 className="text-md font-bold text-gray-800">قافلة الإيمان</h1>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* التنقل */}
       <nav className="flex-1 p-4">
         <ul className="space-y-2">
           {menuItems.map((item) => {
@@ -55,9 +54,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
               <li key={item.id}>
                 <button
                   onClick={() => setCurrentPage(item.id)}
-                  className={`sidebar-item w-full text-left ${isActive ? 'active' : ''}`}
+                  className={`sidebar-item w-full flex items-center ${isRTL ? 'flex-row-reverse text-right' : 'text-left'} p-3 rounded-lg transition-colors ${
+                    isActive ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
+                  }`}
                 >
-                  <Icon className="w-5 h-5 mr-3" />
+                  <Icon className={`w-5 h-5 ${isRTL ? 'ml-3' : 'mr-3'}`} />
                   <span className="font-medium">{item.label}</span>
                 </button>
               </li>
