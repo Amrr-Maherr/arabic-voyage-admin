@@ -107,7 +107,7 @@ const BackgroundManager = () => {
         {backgroundSections.map((section) => (
           <div key={section.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {/* رأس القسم */}
-            <div className={`${section.gradient || 'bg-gray-500'} p-4 text-white`}>
+            <div className="bg-gray-500 p-4 text-white">
               <h3 className="text-lg font-semibold">{section.title}</h3>
               <p className="text-white/80 text-sm">{section.description}</p>
             </div>
