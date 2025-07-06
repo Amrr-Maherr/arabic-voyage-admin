@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Phone, MapPin, User } from 'lucide-react';
 
-const LimousinesPage = () => {
+interface LimousinesPageProps {
+  isEmployee?: boolean;
+}
+
+const LimousinesPage: React.FC<LimousinesPageProps> = ({ isEmployee = false }) => {
   const isRTL = document.dir === 'rtl';
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -44,25 +48,43 @@ const LimousinesPage = () => {
     }
   ];
 
+  const handleEdit = (limoId: number) => {
+    if (!isEmployee) {
+      console.log('Editing limousine:', limoId);
+    }
+  };
+
+  const handleDelete = (limoId: number) => {
+    if (!isEmployee) {
+      console.log('Deleting limousine:', limoId);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* رأس الصفحة */}
       <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">إدارة الليموزين</h1>
-          <p className="text-gray-600">إدارة أسطول النقل الفاخر الخاص بك</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {isEmployee ? 'الليموزين' : 'إدارة الليموزين'}
+          </h1>
+          <p className="text-gray-600">
+            {isEmployee ? 'عرض خدمات الليموزين المتاحة' : 'إدارة أسطول النقل الفاخر الخاص بك'}
+          </p>
         </div>
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
-        >
-          <Plus className="w-5 h-5" />
-          <span>إضافة ليموزين</span>
-        </button>
+        {!isEmployee && (
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+          >
+            <Plus className="w-5 h-5" />
+            <span>إضافة ليموزين</span>
+          </button>
+        )}
       </div>
 
       {/* نموذج إضافة ليموزين */}
-      {showAddForm && (
+      {showAddForm && !isEmployee && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">إضافة ليموزين جديد</h3>
           <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -165,9 +187,11 @@ const LimousinesPage = () => {
                 <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
                   الحالة
                 </th>
-                <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
-                  الإجراءات
-                </th>
+                {!isEmployee && (
+                  <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${isRTL ? 'text-right' : ''}`}>
+                    الإجراءات
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -217,16 +241,24 @@ const LimousinesPage = () => {
                         {limo.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className={`flex space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <button className="text-blue-600 hover:text-blue-800">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="text-red-600 hover:text-red-800">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+                    {!isEmployee && (
+                      <td className="px-6 py-4">
+                        <div className={`flex space-x-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <button 
+                            onClick={() => handleEdit(limo.id)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(limo.id)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -234,7 +266,8 @@ const LimousinesPage = () => {
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 };
 
 export default LimousinesPage;
