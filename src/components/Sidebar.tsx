@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   LayoutDashboard, 
@@ -15,10 +16,11 @@ interface SidebarProps {
   currentPage: string;
   setCurrentPage: (page: string) => void;
   isRTL: boolean;
+  userType?: 'admin' | 'employee';
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL }) => {
-  const menuItems = [
+const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL, userType = 'admin' }) => {
+  const adminMenuItems = [
     { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
     { id: 'flights', label: 'إدارة الرحلات الجوية', icon: Plane },
     { id: 'hotels', label: 'إدارة الفنادق', icon: Building2 },
@@ -28,6 +30,16 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
     { id: 'color-settings', label: 'إعدادات الألوان', icon: Palette },
     { id: 'settings', label: 'الإعدادات', icon: Settings },
   ];
+
+  const employeeMenuItems = [
+    { id: 'dashboard', label: 'لوحة التحكم', icon: LayoutDashboard },
+    { id: 'flights', label: 'الرحلات الجوية', icon: Plane },
+    { id: 'hotels', label: 'الفنادق', icon: Building2 },
+    { id: 'limousines', label: 'الليموزين', icon: Car },
+    { id: 'bookings', label: 'الحجوزات', icon: Calendar },
+  ];
+
+  const menuItems = userType === 'admin' ? adminMenuItems : employeeMenuItems;
 
   return (
     <div className={`bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200 ${isRTL ? 'border-l border-r-0' : ''}`}>
@@ -39,6 +51,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL })
           </div>
           <div>
             <h1 className="text-md font-bold text-gray-800">قافلة الإيمان</h1>
+            <p className="text-xs text-gray-500">
+              {userType === 'admin' ? 'أدمن' : 'موظف'}
+            </p>
           </div>
         </div>
       </div>

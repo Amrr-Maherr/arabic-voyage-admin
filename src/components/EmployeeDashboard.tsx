@@ -6,12 +6,9 @@ import DashboardHome from './DashboardHome';
 import FlightsPage from './FlightsPage';
 import HotelsPage from './HotelsPage';
 import LimousinesPage from './LimousinesPage';
-import BackgroundManager from './BackgroundManager';
 import BookingsPage from './BookingsPage';
-import SettingsPage from './SettingsPage';
-import ColorSettings from './ColorSettings';
 
-const Dashboard = () => {
+const EmployeeDashboard = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isRTL, setIsRTL] = useState(false);
 
@@ -20,19 +17,13 @@ const Dashboard = () => {
       case 'dashboard':
         return <DashboardHome />;
       case 'flights':
-        return <FlightsPage />;
+        return <FlightsPage isEmployee={true} />;
       case 'hotels':
-        return <HotelsPage />;
+        return <HotelsPage isEmployee={true} />;
       case 'limousines':
-        return <LimousinesPage />;
+        return <LimousinesPage isEmployee={true} />;
       case 'bookings':
         return <BookingsPage />;
-      case 'background':
-        return <BackgroundManager />;
-      case 'color-settings':
-        return <ColorSettings />;
-      case 'settings':
-        return <SettingsPage />;
       default:
         return <DashboardHome />;
     }
@@ -45,10 +36,10 @@ const Dashboard = () => {
           currentPage={currentPage} 
           setCurrentPage={setCurrentPage}
           isRTL={isRTL}
-          userType="admin"
+          userType="employee"
         />
         <div className="flex-1 flex flex-col">
-          <Navbar isRTL={isRTL} setIsRTL={setIsRTL} userType="admin" />
+          <Navbar isRTL={isRTL} setIsRTL={setIsRTL} userType="employee" />
           <main className="flex-1 p-6">
             {renderCurrentPage()}
           </main>
@@ -58,4 +49,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default EmployeeDashboard;

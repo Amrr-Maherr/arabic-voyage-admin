@@ -1,19 +1,20 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Plane, Hotel, Car } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Plane, Hotel, Car, Shield, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    rememberMe: false
+    userType: 'admin' // 'admin' or 'employee'
   });
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -22,7 +23,13 @@ const LoginPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('محاولة تسجيل الدخول:', formData);
-    // مكان تنفيذ منطق تسجيل الدخول
+    
+    // توجيه المستخدم حسب نوع الحساب
+    if (formData.userType === 'admin') {
+      navigate('/admin-dashboard');
+    } else {
+      navigate('/employee-dashboard');
+    }
   };
 
   return (
@@ -52,6 +59,41 @@ const LoginPage = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* نوع المستخدم */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium text-gray-700">نوع الحساب</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('userType', 'admin')}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                      formData.userType === 'admin'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <Shield className="w-5 h-5" />
+                      <span className="text-sm font-medium">أدمن</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('userType', 'employee')}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                      formData.userType === 'employee'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <User className="w-5 h-5" />
+                      <span className="text-sm font-medium">موظف</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               {/* البريد الإلكتروني */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
@@ -101,7 +143,7 @@ const LoginPage = () => {
                 className="w-full h-12 travel-gradient text-white font-medium text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
               >
                 <span className="flex items-center justify-center gap-2">
-                  تسجيل الدخول
+                  تسجيل الدخول كـ {formData.userType === 'admin' ? 'أدمن' : 'موظف'}
                   <ArrowRight className="w-5 h-5" />
                 </span>
               </Button>
@@ -110,9 +152,13 @@ const LoginPage = () => {
               <div className="text-center pt-4 border-t border-gray-200">
                 <p className="text-gray-600">
                   ليس لديك حساب؟{' '}
-                  <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/register')}
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
                     أنشئ حساب الآن
-                  </Link>
+                  </button>
                 </p>
               </div>
             </form>
