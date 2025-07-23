@@ -9,6 +9,14 @@ import { bookingFormSchema } from '@/schemas/bookingSchema';
 import BookingStatsCards from './bookings/BookingStatsCards';
 import BookingTable from './bookings/BookingTable';
 import BookingEditDialog from './bookings/BookingEditDialog';
+import SearchBar from './search/SearchBar';
+import FilterPanel from './search/FilterPanel';
+import SortControls from './search/SortControls';
+import PaginationControls from './search/PaginationControls';
+import { useSearch } from '@/hooks/useSearch';
+import { useFilter } from '@/hooks/useFilter';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState<Booking[]>(() => {
@@ -64,6 +72,53 @@ const BookingsPage = () => {
     booking.type === 'limousine' || 
     (booking.type === 'hotel' && !booking.linkedBookingId)
   );
+
+  // Search, Filter, Sort, and Pagination
+  const { searchTerm, setSearchTerm, filteredData: searchedBookings } = useSearch({
+    data: mainBookings,
+    searchFields: ['customer', 'id']
+  });
+
+  const statusOptions = [
+    { value: 'confirmed', label: 'مؤكد' },
+    { value: 'pending', label: 'قيد الانتظار' },
+    { value: 'cancelled', label: 'ملغي' }
+  ];
+
+  const typeOptions = [
+    { value: 'flight', label: 'رحلة جوية' },
+    { value: 'hotel', label: 'فندق' },
+    { value: 'limousine', label: 'ليموزين' }
+  ];
+
+  const { filters, setFilters, filteredData } = useFilter({
+    data: searchedBookings
+  });
+
+  const sortOptions = [
+    { value: 'date', label: 'التاريخ' },
+    { value: 'customer', label: 'العميل' },
+    { value: 'amount', label: 'المبلغ' },
+    { value: 'status', label: 'الحالة' }
+  ];
+
+  const { sortConfig, setSortConfig, sortedData } = useSort({
+    data: filteredData,
+    initialSort: { field: 'date', direction: 'desc' }
+  });
+
+  const {
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalItems,
+    paginatedData,
+    goToPage,
+    setItemsPerPage
+  } = usePagination({
+    data: sortedData,
+    initialItemsPerPage: 10
+  });
 
   const updateBookingStatus = (id: string, status: Booking['status']) => {
     setBookings(prevBookings =>
@@ -151,11 +206,49 @@ const BookingsPage = () => {
         isRTL={isRTL}
       />
 
+      {/* أدوات البحث والفلترة */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="البحث في الحجوزات..."
+          />
+          <SortControls
+            sortConfig={sortConfig}
+            onSortChange={setSortConfig}
+            sortOptions={sortOptions}
+          />
+        </div>
+        
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={setFilters}
+          statusOptions={statusOptions}
+          typeOptions={typeOptions}
+        />
+      </div>
+
+      {/* عداد النتائج */}
+      <div className="text-sm text-muted-foreground">
+        عرض {paginatedData.length} من {totalItems} حجز
+      </div>
+
       <BookingTable
-        bookings={mainBookings}
+        bookings={paginatedData}
         isRTL={isRTL}
         onEdit={openEditDialog}
         onStatusUpdate={updateBookingStatus}
+      />
+
+      {/* أدوات التنقل بين الصفحات */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={goToPage}
+        onItemsPerPageChange={setItemsPerPage}
       />
 
       <BookingEditDialog

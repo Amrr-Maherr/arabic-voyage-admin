@@ -3,6 +3,14 @@ import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import LimousineForm from './limousines/LimousineForm';
 import LimousineTable from './limousines/LimousineTable';
+import SearchBar from './search/SearchBar';
+import FilterPanel from './search/FilterPanel';
+import SortControls from './search/SortControls';
+import PaginationControls from './search/PaginationControls';
+import { useSearch } from '@/hooks/useSearch';
+import { useFilter } from '@/hooks/useFilter';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 
 interface LimousinesPageProps {
   isEmployee?: boolean;
@@ -63,6 +71,46 @@ const LimousinesPage: React.FC<LimousinesPageProps> = ({ isEmployee = false }) =
     }
   };
 
+  // Search, Filter, Sort, and Pagination
+  const { searchTerm, setSearchTerm, filteredData: searchedData } = useSearch({
+    data: limousines,
+    searchFields: ['carType', 'driverName', 'route']
+  });
+
+  const statusOptions = [
+    { value: 'نشط', label: 'نشط' },
+    { value: 'صيانة', label: 'صيانة' }
+  ];
+
+  const { filters, setFilters, filteredData } = useFilter({
+    data: searchedData
+  });
+
+  const sortOptions = [
+    { value: 'carType', label: 'نوع السيارة' },
+    { value: 'driverName', label: 'اسم السائق' },
+    { value: 'pricePerHour', label: 'السعر بالساعة' },
+    { value: 'date', label: 'التاريخ' }
+  ];
+
+  const { sortConfig, setSortConfig, sortedData } = useSort({
+    data: filteredData,
+    initialSort: { field: 'date', direction: 'desc' }
+  });
+
+  const {
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalItems,
+    paginatedData,
+    goToPage,
+    setItemsPerPage
+  } = usePagination({
+    data: sortedData,
+    initialItemsPerPage: 10
+  });
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Adding new limousine');
@@ -100,12 +148,49 @@ const LimousinesPage: React.FC<LimousinesPageProps> = ({ isEmployee = false }) =
         />
       )}
 
+      {/* أدوات البحث والفلترة */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="البحث في الليموزين..."
+          />
+          <SortControls
+            sortConfig={sortConfig}
+            onSortChange={setSortConfig}
+            sortOptions={sortOptions}
+          />
+        </div>
+        
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={setFilters}
+          statusOptions={statusOptions}
+        />
+      </div>
+
+      {/* عداد النتائج */}
+      <div className="text-sm text-muted-foreground">
+        عرض {paginatedData.length} من {totalItems} ليموزين
+      </div>
+
       {/* جدول الليموزين */}
       <LimousineTable 
-        limousines={limousines}
+        limousines={paginatedData}
         isEmployee={isEmployee}
         onEdit={handleEdit}
         onDelete={handleDelete}
+      />
+
+      {/* أدوات التنقل بين الصفحات */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={goToPage}
+        onItemsPerPageChange={setItemsPerPage}
       />
     </div>
   );

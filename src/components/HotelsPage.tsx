@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Building2, MapPin, Star } from 'lucide-react';
+import SearchBar from './search/SearchBar';
+import FilterPanel from './search/FilterPanel';
+import SortControls from './search/SortControls';
+import PaginationControls from './search/PaginationControls';
+import { useSearch } from '@/hooks/useSearch';
+import { useFilter } from '@/hooks/useFilter';
+import { useSort } from '@/hooks/useSort';
+import { usePagination } from '@/hooks/usePagination';
 
 interface HotelsPageProps {
   isEmployee?: boolean;
@@ -54,6 +62,46 @@ const HotelsPage: React.FC<HotelsPageProps> = ({ isEmployee = false }) => {
       console.log('Deleting hotel:', hotelId);
     }
   };
+
+  // Search, Filter, Sort, and Pagination
+  const { searchTerm, setSearchTerm, filteredData: searchedHotels } = useSearch({
+    data: hotels,
+    searchFields: ['name', 'location']
+  });
+
+  const statusOptions = [
+    { value: 'متاح', label: 'متاح' },
+    { value: 'محجوز', label: 'محجوز' }
+  ];
+
+  const { filters, setFilters, filteredData } = useFilter({
+    data: searchedHotels
+  });
+
+  const sortOptions = [
+    { value: 'name', label: 'اسم الفندق' },
+    { value: 'location', label: 'الموقع' },
+    { value: 'rating', label: 'التقييم' },
+    { value: 'pricePerNight', label: 'السعر لليلة' }
+  ];
+
+  const { sortConfig, setSortConfig, sortedData } = useSort({
+    data: filteredData,
+    initialSort: { field: 'rating', direction: 'desc' }
+  });
+
+  const {
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalItems,
+    paginatedData,
+    goToPage,
+    setItemsPerPage
+  } = usePagination({
+    data: sortedData,
+    initialItemsPerPage: 9
+  });
 
   return (
     <div className="space-y-6">
@@ -144,9 +192,36 @@ const HotelsPage: React.FC<HotelsPageProps> = ({ isEmployee = false }) => {
         </div>
       )}
 
+      {/* أدوات البحث والفلترة */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="البحث في الفنادق..."
+          />
+          <SortControls
+            sortConfig={sortConfig}
+            onSortChange={setSortConfig}
+            sortOptions={sortOptions}
+          />
+        </div>
+        
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={setFilters}
+          statusOptions={statusOptions}
+        />
+      </div>
+
+      {/* عداد النتائج */}
+      <div className="text-sm text-muted-foreground">
+        عرض {paginatedData.length} من {totalItems} فندق
+      </div>
+
       {/* Hotels Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {hotels.map((hotel) => (
+        {paginatedData.map((hotel) => (
           <div key={hotel.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <img
               src={hotel.image}
@@ -217,6 +292,16 @@ const HotelsPage: React.FC<HotelsPageProps> = ({ isEmployee = false }) => {
           </div>
         ))}
       </div>
+
+      {/* أدوات التنقل بين الصفحات */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={goToPage}
+        onItemsPerPageChange={setItemsPerPage}
+      />
     </div>
   );
 };
