@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Plane, Hotel, Car } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Plane, Hotel, Car, Shield, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,7 +15,8 @@ const RegisterPage = () => {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    accountType: 'employee'
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -103,6 +105,44 @@ const RegisterPage = () => {
                   className="h-11 text-right"
                   required
                 />
+              </div>
+
+              {/* نوع الحساب */}
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <UserCheck className="w-4 h-4" />
+                  نوع الحساب
+                </Label>
+                <RadioGroup
+                  value={formData.accountType}
+                  onValueChange={(value) => handleInputChange('accountType', value)}
+                  className="flex flex-col gap-3"
+                >
+                  <div className="flex items-center space-x-2 space-x-reverse bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
+                    <RadioGroupItem value="employee" id="employee" />
+                    <Label htmlFor="employee" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <User className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">موظف</p>
+                        <p className="text-sm text-gray-600">صلاحية عرض البيانات فقط</p>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 space-x-reverse bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
+                    <RadioGroupItem value="admin" id="admin" />
+                    <Label htmlFor="admin" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">مدير</p>
+                        <p className="text-sm text-gray-600">صلاحية كاملة للتعديل والإدارة</p>
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
 
               {/* كلمة المرور */}
