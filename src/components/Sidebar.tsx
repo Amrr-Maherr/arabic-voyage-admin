@@ -16,7 +16,7 @@ interface SidebarProps {
   currentPage: string;
   setCurrentPage: (page: string) => void;
   isRTL: boolean;
-  userType?: 'admin' | 'employee';
+  userType?: 'admin' | 'employee' | 'date-pricing' | 'room-manager';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL, userType = 'admin' }) => {
@@ -39,7 +39,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL, u
     { id: 'bookings', label: 'الحجوزات', icon: Calendar },
   ];
 
-  const menuItems = userType === 'admin' ? adminMenuItems : employeeMenuItems;
+  const getMenuItems = () => {
+    if (userType === 'date-pricing') {
+      return [{ id: 'date-pricing', label: 'تسعير التواريخ', icon: Calendar }];
+    }
+    if (userType === 'room-manager') {
+      return [{ id: 'room-management', label: 'إدارة الغرف', icon: Building2 }];
+    }
+    return userType === 'admin' ? adminMenuItems : employeeMenuItems;
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <div className={`bg-white shadow-lg min-h-screen w-64 flex flex-col border-r border-gray-200 ${isRTL ? 'border-l border-r-0' : ''}`}>
@@ -52,7 +62,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isRTL, u
           <div>
             <h1 className="text-md font-bold text-gray-800">قافلة الإيمان</h1>
             <p className="text-xs text-gray-500">
-              {userType === 'admin' ? 'أدمن' : 'موظف'}
+              {userType === 'admin' ? 'أدمن' : 
+               userType === 'employee' ? 'موظف' :
+               userType === 'date-pricing' ? 'مُسعِّر' :
+               userType === 'room-manager' ? 'مدير غرف' : 'مستخدم'}
             </p>
           </div>
         </div>

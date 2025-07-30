@@ -11,6 +11,8 @@ import RegisterPage from "./components/RegisterPage";
 import ColorSettings from "./components/ColorSettings";
 import Dashboard from "./components/Dashboard";
 import EmployeeDashboard from "./components/EmployeeDashboard";
+import DatePricingDashboard from "./components/DatePricingDashboard";
+import RoomManagerDashboard from "./components/RoomManagerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin-dashboard" element={<Dashboard />} />
           <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="/date-pricing-dashboard" element={<DatePricingDashboard />} />
+          <Route path="/room-manager-dashboard" element={<RoomManagerDashboard />} />
           <Route path="/color-settings" element={<ColorSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
