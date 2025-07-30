@@ -93,12 +93,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               {statusOptions.length > 0 && (
                 <div className="space-y-2">
                   <Label>الحالة</Label>
-                  <Select value={filters.status || ''} onValueChange={(value) => updateFilter('status', value)}>
+                  <Select value={filters.status || 'all'} onValueChange={(value) => updateFilter('status', value === 'all' ? undefined : value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="اختر الحالة" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">جميع الحالات</SelectItem>
+                      <SelectItem value="all">جميع الحالات</SelectItem>
                       {statusOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
@@ -112,12 +112,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               {typeOptions.length > 0 && (
                 <div className="space-y-2">
                   <Label>النوع</Label>
-                  <Select value={filters.type || ''} onValueChange={(value) => updateFilter('type', value)}>
+                  <Select value={filters.type || 'all'} onValueChange={(value) => updateFilter('type', value === 'all' ? undefined : value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="اختر النوع" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">جميع الأنواع</SelectItem>
+                      <SelectItem value="all">جميع الأنواع</SelectItem>
                       {typeOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
