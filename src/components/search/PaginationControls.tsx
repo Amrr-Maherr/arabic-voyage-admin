@@ -18,6 +18,7 @@ interface PaginationControlsProps {
   onPageChange: (page: number) => void;
   onItemsPerPageChange: (itemsPerPage: number) => void;
   className?: string;
+  isLoading?: boolean;
 }
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({
@@ -27,7 +28,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   itemsPerPage,
   onPageChange,
   onItemsPerPageChange,
-  className = ""
+  className = "",
+  isLoading = false
 }) => {
   const isRTL = document.dir === 'rtl';
   
@@ -56,18 +58,24 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   };
 
   return (
-    <div className={`flex flex-col sm:flex-row items-center justify-between ${isRTL ? 'sm:flex-row-reverse' : ''} space-y-4 sm:space-y-0 ${className}`}>
+    <div className={`flex flex-col lg:flex-row items-center justify-between ${isRTL ? 'lg:flex-row-reverse' : ''} space-y-4 lg:space-y-0 gap-4 ${className} ${isLoading ? 'opacity-50' : ''}`}>
       
       {/* Items info and per page selector */}
-      <div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse' : ''} space-x-4 text-sm text-muted-foreground`}>
-        <span>
-          عرض {startItem} - {endItem} من {totalItems} عنصر
-        </span>
+      <div className={`flex flex-col sm:flex-row items-center ${isRTL ? 'sm:flex-row-reverse space-x-reverse' : ''} space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-muted-foreground`}>
+        <div className="flex items-center space-x-2 bg-muted/50 px-3 py-1 rounded-md">
+          <span className="font-medium">
+            عرض {startItem.toLocaleString('ar')} - {endItem.toLocaleString('ar')} من {totalItems.toLocaleString('ar')} عنصر
+          </span>
+        </div>
         
         <div className={`flex items-center ${isRTL ? 'flex-row-reverse space-x-reverse' : ''} space-x-2`}>
-          <span>عناصر لكل صفحة:</span>
-          <Select value={itemsPerPage.toString()} onValueChange={(value) => onItemsPerPageChange(Number(value))}>
-            <SelectTrigger className="w-[80px]">
+          <span className="whitespace-nowrap">عناصر لكل صفحة:</span>
+          <Select 
+            value={itemsPerPage.toString()} 
+            onValueChange={(value) => onItemsPerPageChange(Number(value))}
+            disabled={isLoading}
+          >
+            <SelectTrigger className="w-[80px] h-8">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -82,39 +90,50 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => onPageChange(currentPage - 1)}
-                className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
-            
-            {generatePageNumbers().map((page, index) => (
-              <PaginationItem key={index}>
-                {page === '...' ? (
-                  <PaginationEllipsis />
-                ) : (
-                  <PaginationLink
-                    onClick={() => onPageChange(page as number)}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                )}
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <div className="text-xs text-muted-foreground">
+            صفحة {currentPage.toLocaleString('ar')} من {totalPages.toLocaleString('ar')}
+          </div>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => !isLoading && onPageChange(currentPage - 1)}
+                  className={`transition-all ${currentPage === 1 || isLoading ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:bg-primary/10'}`}
+                />
               </PaginationItem>
-            ))}
-            
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => onPageChange(currentPage + 1)}
-                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              
+              {generatePageNumbers().map((page, index) => (
+                <PaginationItem key={index}>
+                  {page === '...' ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      onClick={() => !isLoading && onPageChange(page as number)}
+                      isActive={currentPage === page}
+                      className={`cursor-pointer transition-all ${currentPage === page ? 'bg-primary text-primary-foreground' : 'hover:bg-primary/10'} ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+                    >
+                      {page}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
+              
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => !isLoading && onPageChange(currentPage + 1)}
+                  className={`transition-all ${currentPage === totalPages || isLoading ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:bg-primary/10'}`}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+      
+      {totalPages === 0 && (
+        <div className="text-sm text-muted-foreground text-center py-4">
+          لا توجد صفحات لعرضها
+        </div>
       )}
     </div>
   );
