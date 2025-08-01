@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Plane, Hotel, Car, Shield, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Plane, Hotel, Car, Shield, User, Calendar, Building } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
@@ -27,8 +27,12 @@ const LoginPage = () => {
     // توجيه المستخدم حسب نوع الحساب
     if (formData.userType === 'admin') {
       navigate('/admin-dashboard');
-    } else {
+    } else if (formData.userType === 'employee') {
       navigate('/employee-dashboard');
+    } else if (formData.userType === 'date-pricing') {
+      navigate('/date-pricing-dashboard');
+    } else if (formData.userType === 'room-manager') {
+      navigate('/room-manager-dashboard');
     }
   };
 
@@ -68,13 +72,13 @@ const LoginPage = () => {
                     onClick={() => handleInputChange('userType', 'admin')}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${
                       formData.userType === 'admin'
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        ? 'border-purple-500 bg-purple-50 text-purple-700'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <div className="flex flex-col items-center gap-2">
                       <Shield className="w-5 h-5" />
-                      <span className="text-sm font-medium">أدمن</span>
+                      <span className="text-sm font-medium">مدير</span>
                     </div>
                   </button>
                   <button
@@ -89,6 +93,34 @@ const LoginPage = () => {
                     <div className="flex flex-col items-center gap-2">
                       <User className="w-5 h-5" />
                       <span className="text-sm font-medium">موظف</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('userType', 'date-pricing')}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                      formData.userType === 'date-pricing'
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <Calendar className="w-5 h-5" />
+                      <span className="text-sm font-medium">يوزر تاريخ</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleInputChange('userType', 'room-manager')}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                      formData.userType === 'room-manager'
+                        ? 'border-orange-500 bg-orange-50 text-orange-700'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <Building className="w-5 h-5" />
+                      <span className="text-sm font-medium">مدير الغرف</span>
                     </div>
                   </button>
                 </div>
@@ -143,7 +175,12 @@ const LoginPage = () => {
                 className="w-full h-12 travel-gradient text-white font-medium text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
               >
                 <span className="flex items-center justify-center gap-2">
-                  تسجيل الدخول كـ {formData.userType === 'admin' ? 'أدمن' : 'موظف'}
+                  تسجيل الدخول كـ {
+                    formData.userType === 'admin' ? 'مدير' :
+                    formData.userType === 'employee' ? 'موظف' :
+                    formData.userType === 'date-pricing' ? 'يوزر تاريخ' :
+                    'مدير الغرف'
+                  }
                   <ArrowRight className="w-5 h-5" />
                 </span>
               </Button>
