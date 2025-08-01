@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Plane, Hotel, Car, Shield, UserCheck } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, Plane, Hotel, Car, Shield, UserCheck, Calendar, Building } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
@@ -139,6 +139,30 @@ const RegisterPage = () => {
                       <div>
                         <p className="font-medium text-gray-800">مدير</p>
                         <p className="text-sm text-gray-600">صلاحية كاملة للتعديل والإدارة</p>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 space-x-reverse bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
+                    <RadioGroupItem value="date-pricing" id="date-pricing" />
+                    <Label htmlFor="date-pricing" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Calendar className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">يوزر تاريخ</p>
+                        <p className="text-sm text-gray-600">وضع تسعير الفنادق وتحديد التواريخ المتاحة</p>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 space-x-reverse bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors">
+                    <RadioGroupItem value="room-manager" id="room-manager" />
+                    <Label htmlFor="room-manager" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <Building className="w-4 h-4 text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">مدير الغرف</p>
+                        <p className="text-sm text-gray-600">إدارة الغرف وأسعار الفنادق</p>
                       </div>
                     </Label>
                   </div>
